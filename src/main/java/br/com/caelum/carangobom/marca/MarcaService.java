@@ -8,7 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+/**
+ * Classe reponsável pela lógica de negócios de marcas
+ */
 @Service
 public class MarcaService {
 
@@ -16,6 +20,12 @@ public class MarcaService {
 
     private MarcaDtoMapper marcaDtoMapper;
 
+    /**
+     * Construtor de marca service
+     *
+     * @param marcaRepository o repositório de marcas
+     * @param marcaDtoMapper o conversor de objeto de transferência para entidade
+     */
     @Autowired
     public MarcaService(MarcaRepository marcaRepository, MarcaDtoMapper marcaDtoMapper) {
         this.marcaRepository = marcaRepository;
@@ -23,26 +33,26 @@ public class MarcaService {
     }
 
     @Transactional
-    public List<Marca> listarMarcas() {
-        return marcaRepository.findAllByOrderByNome();
+    public List<MarcaDto> listarMarcas() {
+        return marcaRepository.findAllByOrderByNome().stream().map(marcaDtoMapper::map).collect(Collectors.toList());
     }
 
     @Transactional
-    public Marca obterMarcaPorId(Long id) {
+    public MarcaDto obterMarcaPorId(Long id) {
         Optional<Marca> marca = marcaRepository.findById(id);
-        return marca.orElseThrow(() -> new NotFoundException("Marca não encontrada"));
+        return marcaDtoMapper.map(marca.orElseThrow(() -> new NotFoundException("Marca não encontrada")));
     }
 
     @Transactional
-    public Marca cadastrarMarca(MarcaDto marcaDto){
+    public MarcaDto cadastrarMarca(MarcaDto marcaDto){
         validarMarcaExistente(marcaDto.getNome());
 
         var novaMarca = marcaDtoMapper.map(marcaDto);
-        return marcaRepository.save(novaMarca);
+        return marcaDtoMapper.map(marcaRepository.save(novaMarca));
     }
 
     @Transactional
-    public Marca alterarMarca(Long id, MarcaDto marcaDto) {
+    public MarcaDto alterarMarca(Long id, MarcaDto marcaDto) {
         validarMarcaExistente(marcaDto.getNome());
 
         var marcaEncontrada = obterMarcaPorId(id);
@@ -51,9 +61,9 @@ public class MarcaService {
     }
 
     @Transactional
-    public Marca deletarMarca(Long id) {
+    public MarcaDto deletarMarca(Long id) {
         var marcaEncontrada = obterMarcaPorId(id);
-        marcaRepository.delete(marcaEncontrada);
+        marcaRepository.deleteById(marcaEncontrada.getId());
         return marcaEncontrada;
     }
 

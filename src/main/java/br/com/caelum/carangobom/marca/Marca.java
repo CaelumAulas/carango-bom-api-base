@@ -8,6 +8,9 @@ import javax.validation.constraints.Size;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+/**
+ * Classe responsável por gerencia a entidade marca
+ */
 @Entity
 public class Marca {
 
