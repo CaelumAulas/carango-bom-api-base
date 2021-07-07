@@ -1,10 +1,10 @@
 package br.com.caelum.carangobom.infra.controller;
 
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.service.UserService;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
 import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
-import br.com.caelum.carangobom.infra.jpa.entity.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;

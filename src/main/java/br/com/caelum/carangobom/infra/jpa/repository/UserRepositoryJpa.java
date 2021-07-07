@@ -1,11 +1,11 @@
 package br.com.caelum.carangobom.infra.jpa.repository;
 
 import br.com.caelum.carangobom.domain.entity.User;
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
 import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
-import br.com.caelum.carangobom.infra.jpa.entity.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -29,7 +29,7 @@ public class UserRepositoryJpa implements UserRepository {
         Optional<User> optionalUser = locateUser(id);
 
         if(!optionalUser.isPresent()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Resource '" + id + "' not found");
         }
 
         entityManager.remove(optionalUser.get());
@@ -53,7 +53,8 @@ public class UserRepositoryJpa implements UserRepository {
         Optional<User> optionalUser = locateUser(id);
 
         if(!optionalUser.isPresent()) {
-            throw new NotFoundException();
+            throw new NotFoundException("Resource '" + id + "' not found");
+
         }
 
         return new GetUserResponse(optionalUser.get());
