@@ -4,4 +4,5 @@ public interface Marca {
 	public Long getId();
 	public String getNome();
 	public void setNome(String nome);
+	public void setId(Long id);
 }

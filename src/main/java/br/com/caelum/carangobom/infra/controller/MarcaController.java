@@ -1,103 +1,97 @@
 package br.com.caelum.carangobom.infra.controller;
 
 import br.com.caelum.carangobom.domain.entity.Marca;
-import br.com.caelum.carangobom.domain.repository.MarcaRepository;
-import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
-import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
+import br.com.caelum.carangobom.domain.service.MarcaService;
+import br.com.caelum.carangobom.infra.controller.request.CreateMarcaRequest;
+import br.com.caelum.carangobom.infra.controller.response.MarcaResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping(path = "marcas")
 public class MarcaController {
 
-    private MarcaRepository mr;
+    private MarcaService marcaService;
 
     @Autowired
-    public MarcaController(MarcaRepository mr) {
-        this.mr = mr;
+    public MarcaController(MarcaService marcaService) {
+        this.marcaService = marcaService;
     }
 
-    @GetMapping("/marcas")
-    @ResponseBody
+    @GetMapping
     @Transactional
-    public List<Marca> lista() {
-        return mr.findAllByOrderByNome();
+    public List<MarcaResponse> lista() {
+        return marcaService
+        		.findAllByOrderByNome()
+        		.stream()
+        		.map(MarcaResponse::new)
+        		.toList();
     }
 
-    @GetMapping("/marcas/{id}")
-    @ResponseBody
+    @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<Marca> id(@PathVariable Long id) {
-        Optional<Marca> m1 = mr.findById(id);
-        if (m1.isPresent()) {
-            return ResponseEntity.ok(m1.get());
+    public ResponseEntity<MarcaResponse> id(@PathVariable Long id) {
+        Optional<Marca> marca = marcaService.findById(id);
+        if (marca.isPresent()) {
+            return ResponseEntity.ok(new MarcaResponse(marca.get()));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/marcas")
-    @ResponseBody
+    @PostMapping
     @Transactional
-    public ResponseEntity<Marca> cadastra(@Valid @RequestBody Marca m1, UriComponentsBuilder uriBuilder) {
-        Marca m2 = mr.save(m1);
-        URI h = uriBuilder.path("/marcas/{id}").buildAndExpand(m1.getId()).toUri();
-        return ResponseEntity.created(h).body(m2);
+    public ResponseEntity<MarcaResponse> cadastra(@Valid @RequestBody CreateMarcaRequest marcaForm, UriComponentsBuilder uriBuilder) {
+    	Marca marca = marcaService.create(marcaForm.toMarcaJpa());
+        URI uri = uriBuilder.path("/marcas/{id}").buildAndExpand(marca.getId()).toUri();
+        return ResponseEntity.created(uri).body(new MarcaResponse(marca));
     }
 
-    @PutMapping("/marcas/{id}")
-    @ResponseBody
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca m1) {
-        Optional<Marca> m2 = mr.findById(id);
-        if (m2.isPresent()) {
-            Marca m3 = m2.get();
-            m3.setNome(m1.getNome());
-            return ResponseEntity.ok(m3);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<MarcaResponse> altera(@PathVariable Long id, @Valid @RequestBody CreateMarcaRequest marcaForm) {
+        try {
+			Marca updatedMarca =this.marcaService.update(marcaForm.toMarcaJpa(), id);
+			return ResponseEntity.ok(new MarcaResponse(updatedMarca));
+		} catch (NotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
     }
 
-    @DeleteMapping("/marcas/{id}")
-    @ResponseBody
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Marca> deleta(@PathVariable Long id) {
-        Optional<Marca> m1 = mr.findById(id);
-        if (m1.isPresent()) {
-            Marca m2 = m1.get();
-            mr.delete(m2);
-            return ResponseEntity.ok(m2);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> deleta(@PathVariable Long id) {
+        try {
+			marcaService.deleteById(id);
+			return ResponseEntity.ok().build();
+		} catch (NotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseBody
-    public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
-        List<ErroDeParametroOutputDto> l = new ArrayList<>();
-        excecao.getBindingResult().getFieldErrors().forEach(e -> {
-            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
-            d.setParametro(e.getField());
-            d.setMensagem(e.getDefaultMessage());
-            l.add(d);
-        });
-        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
-        l2.setErros(l);
-        return l2;
-    }
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseBody
+//    public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
+//        List<ErroDeParametroOutputDto> l = new ArrayList<>();
+//        excecao.getBindingResult().getFieldErrors().forEach(e -> {
+//            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
+//            d.setParametro(e.getField());
+//            d.setMensagem(e.getDefaultMessage());
+//            l.add(d);
+//        });
+//        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
+//        l2.setErros(l);
+//        return l2;
+//    }
 }
