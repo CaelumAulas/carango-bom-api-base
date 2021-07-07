@@ -4,20 +4,17 @@ import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
-import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
-import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryJpa implements UserRepository {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Autowired
     public UserRepositoryJpa(EntityManager entityManager) {
@@ -36,20 +33,19 @@ public class UserRepositoryJpa implements UserRepository {
     }
 
     @Override
-    public CreateUserResponse save(CreateUserRequest userRequest) {
+    public User save(CreateUserRequest userRequest) {
         User user = userRequest.toUser();
         entityManager.persist(user);
-        return new CreateUserResponse(user);
+        return user;
     }
 
     @Override
-    public List<GetUserResponse> findAll() {
-        return entityManager.createQuery("SELECT u FROM user u", User.class)
-                .getResultList().stream().map(GetUserResponse::new).collect(Collectors.toList());
+    public List<User> findAll() {
+        return entityManager.createQuery("SELECT u FROM user u", User.class).getResultList();
     }
 
     @Override
-    public GetUserResponse findById(Long id) throws NotFoundException {
+    public User findById(Long id) throws NotFoundException {
         Optional<User> optionalUser = locateUser(id);
 
         if(!optionalUser.isPresent()) {
@@ -57,7 +53,7 @@ public class UserRepositoryJpa implements UserRepository {
 
         }
 
-        return new GetUserResponse(optionalUser.get());
+        return optionalUser.get();
     }
 
     private Optional<User> locateUser(Long id) {

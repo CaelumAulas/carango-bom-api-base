@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.service.UserService;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
 import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
+import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +15,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -28,7 +30,16 @@ public class UserController {
 
     @GetMapping
     public List<GetUserResponse> getUsers() {
-        return userService.findAll();
+        return userService.findAll().stream().map(GetUserResponse::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetDetailedUserResponse> getDetailedUser(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(new GetDetailedUserResponse(userService.findById(id)));
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
@@ -36,7 +47,7 @@ public class UserController {
     public ResponseEntity<CreateUserResponse> createUser(@RequestBody @Valid CreateUserRequest createUserRequest,
                                                          UriComponentsBuilder uriComponentsBuilder) {
 
-        CreateUserResponse response = userService.create(createUserRequest);
+        CreateUserResponse response = new CreateUserResponse(userService.create(createUserRequest));
         URI uri = uriComponentsBuilder.path("/users/{id}").buildAndExpand(response.getId()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
