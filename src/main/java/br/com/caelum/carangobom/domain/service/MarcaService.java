@@ -16,7 +16,6 @@ public class MarcaService {
 	
 	@Autowired
 	public MarcaService(MarcaRepository marcaRepository) {
-		System.out.println(marcaRepository);
 		this.marcaRepository = marcaRepository;
 	}
 	
