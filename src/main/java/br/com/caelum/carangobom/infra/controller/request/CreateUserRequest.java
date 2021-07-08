@@ -2,16 +2,19 @@ package br.com.caelum.carangobom.infra.controller.request;
 
 import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.infra.jpa.entity.UserJpa;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
 public class CreateUserRequest {
 
+    @Getter @Setter
     @NotNull @NotBlank
     private String username;
+
+    @Getter @Setter
     @NotNull @NotBlank
     private String password;
 

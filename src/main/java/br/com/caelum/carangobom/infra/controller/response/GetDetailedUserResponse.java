@@ -1,12 +1,14 @@
 package br.com.caelum.carangobom.infra.controller.response;
 
 import br.com.caelum.carangobom.domain.entity.User;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class GetDetailedUserResponse {
 
+    @Getter @Setter
     private Long id;
+    @Getter @Setter
     private String username;
 
     public GetDetailedUserResponse(User user) {

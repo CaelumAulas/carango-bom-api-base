@@ -1,18 +1,18 @@
 package br.com.caelum.carangobom.infra.controller.response;
 
 import br.com.caelum.carangobom.domain.entity.User;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class CreateUserResponse {
 
+    @Getter @Setter
     private Long id;
+    @Getter @Setter
     private String username;
-    private String password;
 
     public CreateUserResponse(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
-        this.password = user.getPassword();
     }
 }
