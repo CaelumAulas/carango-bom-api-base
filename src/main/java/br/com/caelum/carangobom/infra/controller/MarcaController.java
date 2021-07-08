@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "marcas")
@@ -35,7 +36,7 @@ public class MarcaController {
         		.findAllByOrderByNome()
         		.stream()
         		.map(MarcaResponse::new)
-        		.toList();
+        		.collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
