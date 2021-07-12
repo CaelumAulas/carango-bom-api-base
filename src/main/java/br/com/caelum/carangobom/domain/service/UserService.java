@@ -3,7 +3,6 @@ package br.com.caelum.carangobom.domain.service;
 import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
-import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
