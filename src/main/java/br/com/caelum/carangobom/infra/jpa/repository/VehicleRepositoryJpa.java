@@ -4,9 +4,11 @@ import br.com.caelum.carangobom.domain.entity.Vehicle;
 import br.com.caelum.carangobom.domain.repository.VehicleRepository;
 import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 
+@Repository
 public class VehicleRepositoryJpa implements VehicleRepository {
 
     private EntityManager entityManager;
@@ -16,9 +18,13 @@ public class VehicleRepositoryJpa implements VehicleRepository {
         this.entityManager = entityManager;
     }
 
+    private VehicleJpa vehicleToVehicleJpa(Vehicle vehicle){
+        return new VehicleJpa(vehicle);
+    }
+
     @Override
     public Vehicle save(Vehicle vehicle) {
-        VehicleJpa vehicleJpa = new VehicleJpa(vehicle);
+        VehicleJpa vehicleJpa = vehicleToVehicleJpa(vehicle);
         this.entityManager.persist(vehicleJpa);
         return vehicleJpa;
     }
