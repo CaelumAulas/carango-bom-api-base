@@ -2,9 +2,9 @@ package br.com.caelum.carangobom.domain.service;
 
 
 import br.com.caelum.carangobom.domain.entity.User;
+import br.com.caelum.carangobom.domain.entity.UserDummy;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepositoryMock;
-import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
@@ -21,14 +21,12 @@ public class UserServiceTest {
 
     @Test
     void testBeanValidationFail() {
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "", "123456");
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
-        Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(request);
+        Set<ConstraintViolation<UserDummy>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
 
         request.setUsername("usuario");
@@ -52,14 +50,12 @@ public class UserServiceTest {
 
     @Test
     void testBeanValidationSuccess() {
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("usuario");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "usuario", "123456");
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
 
-        Set<ConstraintViolation<CreateUserRequest>> violations = validator.validate(request);
+        Set<ConstraintViolation<UserDummy>> violations = validator.validate(request);
         assertTrue(violations.isEmpty());
     }
 
@@ -67,30 +63,24 @@ public class UserServiceTest {
     void testFindAllSuccess() {
         assertEquals(0, userService.findAll().size());
 
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard user");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
 
-        userService.create(request.toUser());
+        userService.create(request);
 
         assertEquals(1, userService.findAll().size());
 
-        CreateUserRequest request2 = new CreateUserRequest();
-        request.setUsername("premium user");
-        request.setPassword("123456");
+        UserDummy request2 = new UserDummy(2L, "premium user", "123456");
 
-        userService.create(request2.toUser());
+        userService.create(request2);
 
         assertEquals(2, userService.findAll().size());
     }
 
     @Test
     void testFindByIdSuccess() {
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard user");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
 
-        userService.create(request.toUser());
+        userService.create(request);
 
         assertDoesNotThrow(() -> {
             User user = userService.findById(0L);
@@ -103,11 +93,9 @@ public class UserServiceTest {
 
     @Test
     void testFindByIdFail() {
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard user");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
 
-        userService.create(request.toUser());
+        userService.create(request);
 
         assertThrows(NotFoundException.class, () -> {
             userService.findById(1L);
@@ -118,11 +106,9 @@ public class UserServiceTest {
     void testDeleteSuccess() {
         assertEquals(0, userService.findAll().size());
 
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard user");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "standard user", "standard user");
 
-        userService.create(request.toUser());
+        userService.create(request);
 
         assertEquals(1, userService.findAll().size());
 
@@ -138,11 +124,9 @@ public class UserServiceTest {
 
         assertThrows(NotFoundException.class, () -> userService.delete(0L));
 
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard user");
-        request.setPassword("123456");
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
 
-        userService.create(request.toUser());
+        userService.create(request);
 
         assertEquals(1, userService.findAll().size());
         assertDoesNotThrow(() -> {
