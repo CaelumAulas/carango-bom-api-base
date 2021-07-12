@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.*;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserControllerMvcTest {
+class UserControllerMvcTest {
 
     @Autowired
     private MockMvc mockMvc;
