@@ -20,8 +20,11 @@ public class VehicleService {
         this.vehicleRepository = vehiceRepository;
     }
 
-    public Vehicle createVehicle(Vehicle vehicle, Long marcaId) {
+    public Vehicle createVehicle(Vehicle vehicle, Long marcaId) throws NotFoundException {
         Optional<Marca> marca = marcaRepository.findById(marcaId);
+        if(!marca.isPresent()){
+            throw new NotFoundException("Marca not found");
+        }
         vehicle.setMarca(marca.get());
         return vehicleRepository.save(vehicle);
     }
