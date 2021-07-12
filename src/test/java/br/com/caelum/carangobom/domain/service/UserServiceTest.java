@@ -71,7 +71,7 @@ public class UserServiceTest {
         request.setUsername("standard user");
         request.setPassword("123456");
 
-        userService.create(request);
+        userService.create(request.toUser());
 
         assertEquals(1, userService.findAll().size());
 
@@ -79,7 +79,7 @@ public class UserServiceTest {
         request.setUsername("premium user");
         request.setPassword("123456");
 
-        userService.create(request2);
+        userService.create(request2.toUser());
 
         assertEquals(2, userService.findAll().size());
     }
@@ -90,7 +90,7 @@ public class UserServiceTest {
         request.setUsername("standard user");
         request.setPassword("123456");
 
-        userService.create(request);
+        userService.create(request.toUser());
 
         assertDoesNotThrow(() -> {
             User user = userService.findById(0L);
@@ -107,7 +107,7 @@ public class UserServiceTest {
         request.setUsername("standard user");
         request.setPassword("123456");
 
-        userService.create(request);
+        userService.create(request.toUser());
 
         assertThrows(NotFoundException.class, () -> {
             userService.findById(1L);
@@ -122,7 +122,7 @@ public class UserServiceTest {
         request.setUsername("standard user");
         request.setPassword("123456");
 
-        userService.create(request);
+        userService.create(request.toUser());
 
         assertEquals(1, userService.findAll().size());
 
@@ -142,7 +142,7 @@ public class UserServiceTest {
         request.setUsername("standard user");
         request.setPassword("123456");
 
-        userService.create(request);
+        userService.create(request.toUser());
 
         assertEquals(1, userService.findAll().size());
         assertDoesNotThrow(() -> {

@@ -33,10 +33,9 @@ public class UserRepositoryJpa implements UserRepository {
     }
 
     @Override
-    public User save(CreateUserRequest userRequest) {
-        User user = userRequest.toUser();
-        entityManager.persist(user);
-        return user;
+    public User save(User userRequest) {
+        entityManager.persist(userRequest);
+        return userRequest;
     }
 
     @Override

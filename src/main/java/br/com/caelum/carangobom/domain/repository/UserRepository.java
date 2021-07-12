@@ -10,7 +10,7 @@ public interface UserRepository {
 
     void delete(Long id) throws NotFoundException;
 
-    User save(CreateUserRequest user);
+    User save(User user);
 
     List<User> findAll();
 

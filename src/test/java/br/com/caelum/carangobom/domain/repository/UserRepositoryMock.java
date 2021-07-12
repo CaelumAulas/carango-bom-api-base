@@ -23,12 +23,11 @@ public class UserRepositoryMock implements UserRepository {
     }
 
     @Override
-    public User save(@Valid CreateUserRequest user) {
-        User user_ = user.toUser();
-        user_.setId(generateId());
-        this.users.add(user_);
+    public User save(@Valid User user) {
+        user.setId(generateId());
+        this.users.add(user);
 
-        return user_;
+        return user;
     }
 
     @Override

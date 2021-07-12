@@ -27,7 +27,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User create(CreateUserRequest request) {
+    public User create(User request) {
         return userRepository.save(request);
     }
 

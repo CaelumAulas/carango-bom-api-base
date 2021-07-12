@@ -36,7 +36,7 @@ public class UserJpaTest {
         request.setUsername("standard2");
         request.setPassword("123456");
 
-        User response = userRepositoryJpa.save(request);
+        User response = userRepositoryJpa.save(request.toUser());
 
         assertNotNull(response);
         assertEquals(request.getUsername(), response.getUsername());
@@ -45,7 +45,7 @@ public class UserJpaTest {
         request2.setUsername("admin2");
         request2.setPassword("123456");
 
-        User response2 = userRepositoryJpa.save(request2);
+        User response2 = userRepositoryJpa.save(request2.toUser());
 
         assertNotNull(response2);
         assertEquals(request2.getUsername(), response2.getUsername());
@@ -113,12 +113,12 @@ public class UserJpaTest {
         request.setUsername("standard");
         request.setPassword("123456");
 
-        userRepositoryJpa.save(request);
+        userRepositoryJpa.save(request.toUser());
 
         CreateUserRequest request2 = new CreateUserRequest();
         request2.setUsername("admin");
         request2.setPassword("123456");
 
-        userRepositoryJpa.save(request2);
+        userRepositoryJpa.save(request2.toUser());
     }
 }
