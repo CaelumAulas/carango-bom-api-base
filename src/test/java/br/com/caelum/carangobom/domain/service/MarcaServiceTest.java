@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 
 import br.com.caelum.carangobom.domain.entity.Marca;
@@ -75,10 +76,13 @@ class MarcaServiceTest {
 	@Test
 	void shouldCreateAMarca() {
 		MarcaDummy marcaDummy = new MarcaDummy("Audi");
-		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
+		List<MarcaDummy> mockMarcasList = Lists.newArrayList(marcaDummy);
+
 		this.marcaRepository.setMarcas(mockMarcasList);
+
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Marca marcaResult = marcaService.create(marcaDummy);
+
 		assertNotNull(marcaResult);
 		assertEquals(1, marcaResult.getId());
 		assertEquals(marcaDummy.getNome(), marcaResult.getNome());
@@ -87,10 +91,13 @@ class MarcaServiceTest {
 	@Test
 	void shouldUpdateAMarca() throws NotFoundException {
 		MarcaDummy marcaDummy = new MarcaDummy(1L,"Audi");
-		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
+		MarcaDummy[] marcaDummies = {marcaDummy};
+		List<MarcaDummy> mockMarcasList = Lists.newArrayList(marcaDummies);
 		this.marcaRepository.setMarcas(mockMarcasList);
+
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Marca marcaResult = marcaService.update(marcaDummy, 1L);
+
 		assertNotNull(marcaResult);
 		assertEquals(1,marcaResult.getId());
 		assertEquals(marcaDummy.getNome(),marcaResult.getNome());
