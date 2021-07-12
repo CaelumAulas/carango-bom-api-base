@@ -32,9 +32,7 @@ public class MarcaService {
 	}
 
 	public void deleteById(Long id) throws NotFoundException {
-		System.out.println(id);
 		Optional<Marca> marca = this.marcaRepository.findById(id);
-		System.out.println(marca.isPresent());
 		if(marca.isPresent()) {
 			this.marcaRepository.delete(marca.get());			
 		}
