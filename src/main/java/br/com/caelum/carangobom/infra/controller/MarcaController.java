@@ -41,7 +41,7 @@ public class MarcaController {
 
     @GetMapping("/{id}")
     @Transactional
-    public ResponseEntity<MarcaResponse> id(@PathVariable Long id) {
+    public ResponseEntity<MarcaResponse> getMarcaById(@PathVariable Long id) {
         Optional<Marca> marca = marcaService.findById(id);
         if (marca.isPresent()) {
             return ResponseEntity.ok(new MarcaResponse(marca.get()));
@@ -79,20 +79,4 @@ public class MarcaController {
 			return ResponseEntity.notFound().build();
 		}
     }
-
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    @ResponseBody
-//    public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
-//        List<ErroDeParametroOutputDto> l = new ArrayList<>();
-//        excecao.getBindingResult().getFieldErrors().forEach(e -> {
-//            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
-//            d.setParametro(e.getField());
-//            d.setMensagem(e.getDefaultMessage());
-//            l.add(d);
-//        });
-//        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
-//        l2.setErros(l);
-//        return l2;
-//    }
 }

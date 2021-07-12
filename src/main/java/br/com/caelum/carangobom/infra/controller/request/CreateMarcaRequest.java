@@ -4,8 +4,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import br.com.caelum.carangobom.infra.jpa.entity.MarcaJpa;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
+@AllArgsConstructor
 public class CreateMarcaRequest{
 
 	@NotBlank 
