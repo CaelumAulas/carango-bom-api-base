@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class MarcaRepositoryJpaTest {
+class MarcaRepositoryJpaTest {
 
     @Autowired
     private EntityManager em;

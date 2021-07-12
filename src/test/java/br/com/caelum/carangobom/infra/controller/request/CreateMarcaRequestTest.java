@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CreateMarcaRequestTest {
+class CreateMarcaRequestTest {
 
     private Validator validator;
 
