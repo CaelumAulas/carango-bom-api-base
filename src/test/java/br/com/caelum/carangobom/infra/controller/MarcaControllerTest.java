@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @ActiveProfiles("test")
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class MarcaControllerTest {
+class MarcaControllerTest {
 
     @Autowired
     MarcaController marcaController;

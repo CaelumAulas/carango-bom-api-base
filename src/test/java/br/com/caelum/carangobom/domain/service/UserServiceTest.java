@@ -14,7 +14,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     private final UserRepositoryMock userRepository = new UserRepositoryMock();
     private final UserService userService = new UserService(userRepository);

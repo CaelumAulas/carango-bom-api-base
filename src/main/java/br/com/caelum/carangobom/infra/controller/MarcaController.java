@@ -71,7 +71,7 @@ public class MarcaController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> deleta(@PathVariable Long id) {
+    public ResponseEntity<Void> deleta(@PathVariable Long id) {
         try {
 			marcaService.deleteById(id);
 			return ResponseEntity.ok().build();

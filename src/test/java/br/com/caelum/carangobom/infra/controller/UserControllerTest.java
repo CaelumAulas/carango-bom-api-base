@@ -22,7 +22,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserControllerTest {
+class UserControllerTest {
 
     @Autowired
     private UserController userController;
@@ -62,13 +62,13 @@ public class UserControllerTest {
         setup();
         List<GetUserResponse> users = userController.getUsers();
 
-        ResponseEntity<?> response = userController.deleteUser(users.get(0).getId());
+        ResponseEntity<Void> response = userController.deleteUser(users.get(0).getId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         users = userController.getUsers();
         assertEquals(1, users.size());
 
-        ResponseEntity<?> response2 = userController.deleteUser(users.get(0).getId());
+        ResponseEntity<Void> response2 = userController.deleteUser(users.get(0).getId());
         assertEquals(HttpStatus.OK, response2.getStatusCode());
 
         users = userController.getUsers();
@@ -77,7 +77,7 @@ public class UserControllerTest {
 
     @Test
     void testDeleteUserFail() {
-        ResponseEntity<?> response = userController.deleteUser(1L);
+        ResponseEntity<Void> response = userController.deleteUser(1L);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
