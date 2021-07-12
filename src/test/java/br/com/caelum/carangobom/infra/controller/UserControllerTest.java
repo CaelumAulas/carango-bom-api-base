@@ -33,7 +33,7 @@ public class UserControllerTest {
         assertEquals(2, userController.getUsers().size());
 
         CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard");
+        request.setUsername("standard2");
         request.setPassword("123456");
 
         ResponseEntity<CreateUserResponse> response = userController.createUser(request, UriComponentsBuilder.newInstance());
@@ -44,7 +44,7 @@ public class UserControllerTest {
         assertEquals(request.getUsername(), responseBody.getUsername());
 
         CreateUserRequest request2 = new CreateUserRequest();
-        request2.setUsername("admin");
+        request2.setUsername("admin2");
         request2.setPassword("123456");
 
         ResponseEntity<CreateUserResponse> response2 = userController.createUser(request2, UriComponentsBuilder.newInstance());

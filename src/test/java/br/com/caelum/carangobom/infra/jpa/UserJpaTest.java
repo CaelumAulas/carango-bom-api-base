@@ -33,7 +33,7 @@ public class UserJpaTest {
         assertEquals(2, userRepositoryJpa.findAll().size());
 
         CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard");
+        request.setUsername("standard2");
         request.setPassword("123456");
 
         User response = userRepositoryJpa.save(request);
@@ -42,7 +42,7 @@ public class UserJpaTest {
         assertEquals(request.getUsername(), response.getUsername());
 
         CreateUserRequest request2 = new CreateUserRequest();
-        request2.setUsername("admin");
+        request2.setUsername("admin2");
         request2.setPassword("123456");
 
         User response2 = userRepositoryJpa.save(request2);
