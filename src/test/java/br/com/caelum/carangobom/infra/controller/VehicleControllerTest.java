@@ -67,7 +67,8 @@ public class VehicleControllerTest {
                                 .content(objectMapper.writeValueAsString(createVehicleRequest))
                 )
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.header().exists("Location"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.model").value(model))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(price))
@@ -94,6 +95,26 @@ public class VehicleControllerTest {
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andReturn();
+    }
+
+    @Test
+    void shouldReturnTheErrorsWhenTheRequestIsInvalidOnCreateVehicle() throws Exception{
+        String model = "";
+        double price = 0;
+        int year = -30;
+        Long marcaId = -20L;
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(model,price,year,marcaId);
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .post("/vehicle")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
     }
 }

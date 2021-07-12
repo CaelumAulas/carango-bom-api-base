@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping(path = "/vehicle")
@@ -19,13 +23,17 @@ public class VehicleController {
     VehicleService vehicleService;
 
     @PostMapping
-    ResponseEntity<VehicleResponse> createVehicle(@RequestBody CreateVehicleRequest createVehicleRequest){
+    ResponseEntity<VehicleResponse> createVehicle(
+            @Valid @RequestBody CreateVehicleRequest createVehicleRequest,
+            UriComponentsBuilder uriComponentsBuilder
+    ){
         try{
             Vehicle createdVehicle = vehicleService.createVehicle(
                     createVehicleRequest.toVehicleForm(),
                     createVehicleRequest.getMarcaId()
             );
-            return ResponseEntity.ok(new VehicleResponse(createdVehicle));
+            URI uri = uriComponentsBuilder.path("/vehicle/{id}").buildAndExpand(createdVehicle.getId()).toUri();
+            return ResponseEntity.created(uri).body(new VehicleResponse(createdVehicle));
         }catch (NotFoundException exception){
             return ResponseEntity.notFound().build();
         }
