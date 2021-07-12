@@ -15,7 +15,7 @@
 	<description>API do produto de gerenciamento de concessionárias Carango Bom</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 		<surefire.skip>false</surefire.skip>
 		<sonar.projectKey>Acelera-G5_carango-bom-api-base</sonar.projectKey>
 		<sonar.organization>acelera-g5</sonar.organization>
@@ -49,13 +49,20 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
 			<optional>true</optional>
+			<version>1.18.20</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
 		</dependency>
 	</dependencies>
 
