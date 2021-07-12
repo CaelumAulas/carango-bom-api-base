@@ -31,7 +31,7 @@ public class VehicleServiceTest {
 
     @Test
     public void shouldCreateAVehicle() throws NotFoundException {
-        String model = "";
+        String model = "Audi r8";
         int year = 1997;
         double price = 2000;
         VehicleService vehicleService = setup();
@@ -47,7 +47,7 @@ public class VehicleServiceTest {
 
     @Test
     public void shouldReturnAErrorNotFoundAMarcaWhenCreatingVehicle(){
-        String model = "";
+        String model = "Audi r8";
         int year = 1997;
         double price = 2000;
         Long marcaId = 404L;
