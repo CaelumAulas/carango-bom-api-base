@@ -4,10 +4,7 @@ import br.com.caelum.carangobom.domain.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "user")
 public class UserJpa implements User {
@@ -16,6 +13,7 @@ public class UserJpa implements User {
     @Getter @Setter
     private Long id;
     @Getter @Setter
+    @Column(unique = true)
     private String username;
     @Getter @Setter
     private String password;
