@@ -75,7 +75,7 @@ class MarcaServiceTest {
 	@Test
 	void shouldCreateAMarca() {
 		MarcaDummy marcaDummy = new MarcaDummy("Audi");
-		ArrayList mockMarcasList = new ArrayList(Collections.singletonList(marcaDummy));
+		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Marca marcaResult = marcaService.create(marcaDummy);
@@ -87,20 +87,20 @@ class MarcaServiceTest {
 	@Test
 	void shouldUpdateAMarca() throws NotFoundException {
 		MarcaDummy marcaDummy = new MarcaDummy(1L,"Audi");
-		List<MarcaDummy> mockMarcasList = new ArrayList(Arrays.asList(marcaDummy));
+		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Marca marcaResult = marcaService.update(marcaDummy, 1L);
 		assertNotNull(marcaResult);
 		assertEquals(1,marcaResult.getId());
-		assertEquals(marcaDummy.getNome(),marcaResult.getId());
+		assertEquals(marcaDummy.getNome(),marcaResult.getNome());
 	}
 
 	@Test
 	void shouldThrowNotFoundOnUpdate() {
 		String exceptionMessage = "Marca não encontrada";
-		MarcaDummy marcaDummy = new MarcaDummy(1l,"Audi");
-		ArrayList mockMarcasList = new ArrayList(Arrays.asList(marcaDummy));
+		MarcaDummy marcaDummy = new MarcaDummy(1L,"Audi");
+		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		NotFoundException notfoundException = assertThrows(
@@ -112,7 +112,7 @@ class MarcaServiceTest {
 
 	@Test void shouldDeleteAMarca() throws NotFoundException {
 		MarcaDummy marcaDummy = new MarcaDummy(1L, "Audi");
-		ArrayList mockMarcaDummyList = new ArrayList(Arrays.asList(marcaDummy));
+		List<MarcaDummy> mockMarcaDummyList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcaDummyList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		marcaService.deleteById(marcaDummy.getId());
@@ -122,7 +122,7 @@ class MarcaServiceTest {
 	@Test void shoulThrowsNotFounOndDeleteMarca(){
 		String exceptionMessage = "Marca não encontrada";
 		MarcaDummy marcaDummy = new MarcaDummy(1L, "Audi");
-		ArrayList mockMarcaDummyList = new ArrayList(Arrays.asList(marcaDummy));
+		List<MarcaDummy> mockMarcaDummyList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcaDummyList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 
