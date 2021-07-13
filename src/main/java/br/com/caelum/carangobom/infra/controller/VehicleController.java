@@ -7,10 +7,7 @@ import br.com.caelum.carangobom.infra.controller.request.CreateVehicleRequest;
 import br.com.caelum.carangobom.infra.controller.response.VehicleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -29,12 +26,24 @@ public class VehicleController {
     ){
         try{
             Vehicle createdVehicle = vehicleService.createVehicle(
-                    createVehicleRequest.toVehicleForm(),
-                    createVehicleRequest.getMarcaId()
+                    createVehicleRequest.toVehicleForm()
             );
             URI uri = uriComponentsBuilder.path("/vehicle/{id}").buildAndExpand(createdVehicle.getId()).toUri();
             return ResponseEntity.created(uri).body(new VehicleResponse(createdVehicle));
         }catch (NotFoundException exception){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping(path = "/{id}")
+    ResponseEntity<VehicleResponse> updateVehicle(
+            @Valid @RequestBody CreateVehicleRequest createVehicleRequest,
+            @PathVariable Long id
+    ) {
+        try {
+            Vehicle updatedVehicle = this.vehicleService.updateVehicle(createVehicleRequest.toVehicleForm(), id);
+            return ResponseEntity.ok(new VehicleResponse(updatedVehicle));
+        } catch (NotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
 

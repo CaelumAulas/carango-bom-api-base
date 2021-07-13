@@ -23,6 +23,6 @@ public class CreateVehicleRequest {
     Long marcaId;
 
     public VehicleForm toVehicleForm() {
-        return new VehicleForm(null,model,price,year,null);
+        return new VehicleForm(null,model,price,year,null, marcaId);
     }
 }

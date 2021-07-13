@@ -1,8 +1,10 @@
 package br.com.caelum.carangobom.infra.controller;
 
 import br.com.caelum.carangobom.CarangoBomApiApplication;
+import br.com.caelum.carangobom.domain.entity.Vehicle;
 import br.com.caelum.carangobom.infra.controller.request.CreateVehicleRequest;
 import br.com.caelum.carangobom.infra.jpa.entity.MarcaJpa;
+import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +45,11 @@ public class VehicleControllerTest {
     private MarcaJpa createMarca(MarcaJpa marcaJpa){
         entityManager.persist(marcaJpa);
         return marcaJpa;
+    }
+
+    private VehicleJpa createVehicle(VehicleJpa vehicleJpa){
+        entityManager.persist(vehicleJpa);
+        return vehicleJpa;
     }
 
     @BeforeEach
@@ -116,5 +123,78 @@ public class VehicleControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
+    }
+
+    @Test
+    void souldUpdateTheVehicle() throws Exception {
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa("Ford"));
+        MarcaJpa newMarcaJpa = this.createMarca(new MarcaJpa("Audi"));
+        VehicleJpa vehicleJpa = createVehicle(new VehicleJpa(null,"Ford k",2002,15000.0,marcaJpa));
+
+        String model = "Audi";
+        double price = 200000;
+        int year = 2010;
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(model,price,year, newMarcaJpa.getId());
+
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/vehicle/{id}",vehicleJpa.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.model").value(model))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(price))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(year))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.marca.id").value(newMarcaJpa.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.marca.nome").value(newMarcaJpa.getNome()))
+                .andReturn();
+    }
+
+    @Test
+    void shouldReturn404OnUpdateVehicleWhenVehicleDoesntExist() throws Exception{
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa("Ford"));
+        String model = "Audi";
+        double price = 200000;
+        int year = 2010;
+        Long vehicleId = 1000L;
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(model,price,year, marcaJpa.getId());
+
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/vehicle/{id}",vehicleId)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn404OnUpdateVehicleWhenMarcaDoesntExist() throws Exception{
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa("Ford"));
+        VehicleJpa vehicleJpa = createVehicle(new VehicleJpa(null,"Ford k",2002,15000.0,marcaJpa));
+        String model = "Audi";
+        double price = 200000;
+        int year = 2010;
+        Long fakeMarca = 11L;
+        CreateVehicleRequest createVehicleRequest = new CreateVehicleRequest(model,price,year,fakeMarca);
+
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .put("/vehicle/{id}",vehicleJpa.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createVehicleRequest))
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }
