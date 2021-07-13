@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 
 import br.com.caelum.carangobom.domain.entity.Marca;
@@ -18,10 +19,10 @@ class MarcaServiceTest {
 	@Test 
 	void shouldListAllUsersInOrderByNome() {
 		List<MarcaDummy> mockMarcasList = Arrays.asList(
-				new MarcaDummy((long) 1, "Audi"),
-				new MarcaDummy((long) 3, "Ferrari"),
-				new MarcaDummy((long) 2, "Ford"),
-				new MarcaDummy((long) 4, "Porsche")
+				new MarcaDummy(1L, "Audi"),
+				new MarcaDummy(3L, "Ferrari"),
+				new MarcaDummy(2L, "Ford"),
+				new MarcaDummy(4L, "Porsche")
 			);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		
@@ -33,10 +34,10 @@ class MarcaServiceTest {
 	@Test
 	void souldReturnASortedListWithAllUsers() {
 		List<MarcaDummy> mockMarcasList = Arrays.asList(
-				new MarcaDummy((long) 1, "Ferrari"),
-				new MarcaDummy((long) 2, "Porsche"),
-				new MarcaDummy((long) 3, "Audi"),
-				new MarcaDummy((long) 4, "Ford")
+				new MarcaDummy(1L, "Ferrari"),
+				new MarcaDummy(2L, "Porsche"),
+				new MarcaDummy(3L, "Audi"),
+				new MarcaDummy(4L, "Ford")
 			);
 		this.marcaRepository.setMarcas(mockMarcasList);
 
@@ -52,19 +53,19 @@ class MarcaServiceTest {
 	
 	@Test
 	void shouldReturnAMarcaById() {
-		MarcaDummy marcaDummy = new MarcaDummy((long) 1, "Audi");
+		MarcaDummy marcaDummy = new MarcaDummy(1L, "Audi");
 		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Optional<Marca> marcaResult = marcaService.findById(marcaDummy.getId());
 		assertTrue(marcaResult.isPresent());
-		assertEquals(marcaResult.get().getId(), marcaDummy.getId());
-		assertEquals(marcaResult.get().getNome(), marcaDummy.getNome());
+		assertEquals(marcaDummy.getId(),marcaResult.get().getId());
+		assertEquals(marcaDummy.getNome(),marcaResult.get().getNome());
 	}
 	
 	@Test
 	void shouldReturnFalseBecauseItDidNotFoundAMarca() {
-		MarcaDummy marcaDummy = new MarcaDummy((long) 2, "Audi");
+		MarcaDummy marcaDummy = new MarcaDummy(2L, "Audi");
 		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
@@ -75,44 +76,50 @@ class MarcaServiceTest {
 	@Test
 	void shouldCreateAMarca() {
 		MarcaDummy marcaDummy = new MarcaDummy("Audi");
-		ArrayList mockMarcasList = new ArrayList(Collections.singletonList(marcaDummy));
+		List<MarcaDummy> mockMarcasList = Lists.newArrayList(marcaDummy);
+
 		this.marcaRepository.setMarcas(mockMarcasList);
+
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Marca marcaResult = marcaService.create(marcaDummy);
+
 		assertNotNull(marcaResult);
-		assertEquals(marcaResult.getId(), 1);
-		assertEquals(marcaResult.getNome(), marcaDummy.getNome());
+		assertEquals(1, marcaResult.getId());
+		assertEquals(marcaDummy.getNome(), marcaResult.getNome());
 	}
 
 	@Test
 	void shouldUpdateAMarca() throws NotFoundException {
 		MarcaDummy marcaDummy = new MarcaDummy(1L,"Audi");
-		List<MarcaDummy> mockMarcasList = new ArrayList(Arrays.asList(marcaDummy));
+		MarcaDummy[] marcaDummies = {marcaDummy};
+		List<MarcaDummy> mockMarcasList = Lists.newArrayList(marcaDummies);
 		this.marcaRepository.setMarcas(mockMarcasList);
+
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		Marca marcaResult = marcaService.update(marcaDummy, 1L);
+
 		assertNotNull(marcaResult);
-		assertEquals(marcaResult.getId(), 1);
-		assertEquals(marcaResult.getNome(), marcaDummy.getNome());
+		assertEquals(1,marcaResult.getId());
+		assertEquals(marcaDummy.getNome(),marcaResult.getNome());
 	}
 
 	@Test
 	void shouldThrowNotFoundOnUpdate() {
 		String exceptionMessage = "Marca não encontrada";
-		MarcaDummy marcaDummy = new MarcaDummy(1l,"Audi");
-		ArrayList mockMarcasList = new ArrayList(Arrays.asList(marcaDummy));
+		MarcaDummy marcaDummy = new MarcaDummy(1L,"Audi");
+		List<MarcaDummy> mockMarcasList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcasList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		NotFoundException notfoundException = assertThrows(
 				NotFoundException.class,
 				()-> marcaService.update(marcaDummy, 2L)
 		);
-		assertEquals(notfoundException.getMessage(),exceptionMessage);
+		assertEquals(exceptionMessage, notfoundException.getMessage());
 	}
 
 	@Test void shouldDeleteAMarca() throws NotFoundException {
 		MarcaDummy marcaDummy = new MarcaDummy(1L, "Audi");
-		ArrayList mockMarcaDummyList = new ArrayList(Arrays.asList(marcaDummy));
+		List<MarcaDummy> mockMarcaDummyList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcaDummyList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 		marcaService.deleteById(marcaDummy.getId());
@@ -122,7 +129,7 @@ class MarcaServiceTest {
 	@Test void shoulThrowsNotFounOndDeleteMarca(){
 		String exceptionMessage = "Marca não encontrada";
 		MarcaDummy marcaDummy = new MarcaDummy(1L, "Audi");
-		ArrayList mockMarcaDummyList = new ArrayList(Arrays.asList(marcaDummy));
+		List<MarcaDummy> mockMarcaDummyList = Collections.singletonList(marcaDummy);
 		this.marcaRepository.setMarcas(mockMarcaDummyList);
 		MarcaService marcaService = new MarcaService(this.marcaRepository);
 
@@ -130,7 +137,7 @@ class MarcaServiceTest {
 				NotFoundException.class,
 				()-> marcaService.deleteById(2L)
 		);
-		assertEquals(notfoundException.getMessage(),exceptionMessage);
+		assertEquals(exceptionMessage, notfoundException.getMessage());
 	}
 
 }
