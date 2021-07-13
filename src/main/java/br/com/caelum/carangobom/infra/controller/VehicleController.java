@@ -20,7 +20,7 @@ public class VehicleController {
     VehicleService vehicleService;
 
     @PostMapping
-    ResponseEntity<VehicleResponse> createVehicle(
+    public ResponseEntity<VehicleResponse> createVehicle(
             @Valid @RequestBody CreateVehicleRequest createVehicleRequest,
             UriComponentsBuilder uriComponentsBuilder
     ){
@@ -36,7 +36,7 @@ public class VehicleController {
     }
 
     @PutMapping(path = "/{id}")
-    ResponseEntity<VehicleResponse> updateVehicle(
+    public ResponseEntity<VehicleResponse> updateVehicle(
             @Valid @RequestBody CreateVehicleRequest createVehicleRequest,
             @PathVariable Long id
     ) {

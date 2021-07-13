@@ -29,7 +29,7 @@ import javax.persistence.EntityManager;
 @ContextConfiguration(classes = { CarangoBomApiApplication.class })
 @WebAppConfiguration
 @Transactional
-public class VehicleControllerTest {
+class VehicleControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 

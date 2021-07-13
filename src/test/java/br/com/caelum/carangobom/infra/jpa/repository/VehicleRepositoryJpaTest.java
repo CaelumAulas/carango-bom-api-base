@@ -13,7 +13,7 @@ import javax.persistence.PersistenceException;
 import java.util.Optional;
 
 @DataJpaTest
-public class VehicleRepositoryJpaTest {
+class VehicleRepositoryJpaTest {
 
     @Autowired
     private EntityManager entityManager;
