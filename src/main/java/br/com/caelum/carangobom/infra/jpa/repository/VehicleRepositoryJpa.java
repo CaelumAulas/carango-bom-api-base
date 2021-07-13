@@ -5,10 +5,13 @@ import br.com.caelum.carangobom.domain.repository.VehicleRepository;
 import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Optional;
 
 @Repository
+@Transactional
 public class VehicleRepositoryJpa implements VehicleRepository {
 
     private EntityManager entityManager;
@@ -27,5 +30,11 @@ public class VehicleRepositoryJpa implements VehicleRepository {
         VehicleJpa vehicleJpa = vehicleToVehicleJpa(vehicle);
         this.entityManager.persist(vehicleJpa);
         return vehicleJpa;
+    }
+
+    @Override
+    public Optional<Vehicle> findById(Long vehicleId) {
+        VehicleJpa vehicleJpa = this.entityManager.find(VehicleJpa.class, vehicleId);
+        return Optional.ofNullable(vehicleJpa);
     }
 }

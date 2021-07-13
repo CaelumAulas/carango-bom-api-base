@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
+import java.util.Optional;
 
 @DataJpaTest
 public class VehicleRepositoryJpaTest {
@@ -24,6 +25,11 @@ public class VehicleRepositoryJpaTest {
     MarcaJpa createMarca(MarcaJpa marca){
         this.entityManager.persist(marca);
         return marca;
+    }
+
+    VehicleJpa createVehicle(VehicleJpa vehicleJpa){
+        this.entityManager.persist(vehicleJpa);
+        return vehicleJpa;
     }
 
     @Test
@@ -51,5 +57,30 @@ public class VehicleRepositoryJpaTest {
         MarcaJpa marcaJpa = new MarcaJpa(400L,"Audi");
         VehicleJpa vehicleJpa = new VehicleJpa(null,model,year,price,marcaJpa);
         assertThrows(PersistenceException.class,()->vehicleRepositoryJpa.save(vehicleJpa));
+    }
+
+    @Test
+    void shouldReturnAVehicleWhenFindById(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        String model = "audi r8";
+        int year = 2000;
+        double price = 20000;
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa(null,"Audi"));
+        VehicleJpa vehicleJpa = createVehicle(new VehicleJpa(null, model, year, price, marcaJpa));
+        Optional<Vehicle> optionalVehicle = vehicleRepositoryJpa.findById(vehicleJpa.getId());
+        assertTrue(optionalVehicle.isPresent());
+        assertNotNull(optionalVehicle.get().getId());
+        assertEquals(model, optionalVehicle.get().getModel());
+        assertEquals(price, optionalVehicle.get().getPrice());
+        assertEquals(year, optionalVehicle.get().getYear());
+        assertEquals(marcaJpa.getId(), optionalVehicle.get().getMarca().getId());
+    }
+
+    @Test
+    void shouldReturnOptionalNullWhenNotFindById(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        Long vehicleId = 100L;
+        Optional<Vehicle> optionalVehicle = vehicleRepositoryJpa.findById(vehicleId);
+        assertFalse(optionalVehicle.isPresent());
     }
 }

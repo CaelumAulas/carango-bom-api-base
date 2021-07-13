@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.domain.entity.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class VehicleRepositoryMock implements VehicleRepository {
 
@@ -14,5 +15,13 @@ public class VehicleRepositoryMock implements VehicleRepository {
         vehicle.setId(1L);
         vehicleList.add(vehicle);
         return vehicle;
+    }
+
+    @Override
+    public Optional<Vehicle> findById(Long vehicleId) {
+        return this.vehicleList
+                .stream()
+                .filter(vehicle -> vehicle.getId().equals(vehicleId))
+                .findFirst();
     }
 }
