@@ -5,10 +5,10 @@ public interface Vehicle {
     void setId(Long id);
     String getModel();
     void setModel(String model);
-    int getYear();
-    void setYear(int year);
-    double getPrice();
-    void setPrice(double price);
+    Integer getYear();
+    void setYear(Integer year);
+    Double getPrice();
+    void setPrice(Double price);
     Marca getMarca();
     void setMarca(Marca marca);
 }

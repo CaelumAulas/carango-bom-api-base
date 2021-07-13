@@ -14,14 +14,14 @@ public class VehicleJpa implements Vehicle {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String model;
-    private int year;
-    private double price;
+    private Integer year;
+    private Double price;
     @ManyToOne
     private MarcaJpa marca;
 
     public VehicleJpa(){}
 
-    public VehicleJpa(Long id, String model, int year, double price, MarcaJpa marca){
+    public VehicleJpa(Long id, String model, Integer year, Double price, MarcaJpa marca){
         this.id = id;
         this.marca = marca;
         this.year = year;

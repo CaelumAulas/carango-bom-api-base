@@ -10,7 +10,8 @@ import lombok.Data;
 public class VehicleForm implements Vehicle {
     private Long id;
     private String model;
-    private double price;
-    private int year;
+    private Double price;
+    private Integer year;
     private Marca marca;
+    private Long marcaId;
 }
