@@ -39,7 +39,7 @@ public class UserRepositoryJpa implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return entityManager.createQuery("SELECT u FROM user u", User.class).getResultList();
+        return entityManager.createQuery("SELECT u FROM user_entity u", User.class).getResultList();
     }
 
     @Override
@@ -55,7 +55,7 @@ public class UserRepositoryJpa implements UserRepository {
     }
 
     private Optional<User> locateUser(Long id) {
-        List<User> users = entityManager.createQuery("SELECT u FROM user u WHERE id=:id", User.class)
+        List<User> users = entityManager.createQuery("SELECT u FROM user_entity u WHERE id=:id", User.class)
                 .setParameter("id", id)
                 .getResultList();
 

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@Entity(name = "user")
+@Entity(name = "user_entity")
 public class UserJpa implements User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
