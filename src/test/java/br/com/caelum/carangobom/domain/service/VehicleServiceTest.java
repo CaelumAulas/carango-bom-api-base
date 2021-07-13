@@ -13,7 +13,7 @@ import br.com.caelum.carangobom.domain.repository.VehicleRepositoryMock;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VehicleServiceTest {
+class VehicleServiceTest {
 
     private MarcaRepository marcaRepository = new MarcaRepositoryMock();
     private VehicleRepository vehicleRepository= new VehicleRepositoryMock();
