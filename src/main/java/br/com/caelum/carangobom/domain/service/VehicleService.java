@@ -23,12 +23,32 @@ public class VehicleService {
         this.vehicleRepository = vehiceRepository;
     }
 
-    public Vehicle createVehicle(VehicleForm vehicle, Long marcaId) throws NotFoundException {
+    private void setMarcaOnVehicle(Vehicle vehicle, Long marcaId) throws NotFoundException {
         Optional<Marca> marca = marcaRepository.findById(marcaId);
         if(!marca.isPresent()){
             throw new NotFoundException("Marca not found");
         }
         vehicle.setMarca(marca.get());
+    }
+
+    public Vehicle createVehicle(VehicleForm vehicle) throws NotFoundException {
+        this.setMarcaOnVehicle(vehicle, vehicle.getMarcaId());
         return vehicleRepository.save(vehicle);
+    }
+
+    public Vehicle updateVehicle(VehicleForm vehicle, Long vehicleId) throws NotFoundException {
+        Optional<Vehicle> optionalSavedVehicle = this.vehicleRepository.findById(vehicleId);
+        if(!optionalSavedVehicle.isPresent()){
+            throw new NotFoundException("Vehicle not found");
+        }
+        Vehicle savedVehicle = optionalSavedVehicle.get();
+        if(vehicle.getMarcaId() != null){
+            this.setMarcaOnVehicle(vehicle, vehicle.getMarcaId());
+        }
+        savedVehicle.setMarca(vehicle.getMarca());
+        savedVehicle.setModel(vehicle.getModel());
+        savedVehicle.setPrice(vehicle.getPrice());
+        savedVehicle.setYear(vehicle.getYear());
+        return this.vehicleRepository.save(vehicle);
     }
 }

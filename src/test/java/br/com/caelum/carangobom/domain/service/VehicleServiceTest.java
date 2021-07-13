@@ -22,8 +22,8 @@ public class VehicleServiceTest {
         return new VehicleService(this.marcaRepository, this.vehicleRepository);
     }
 
-    VehicleForm createVehicle(String model, int year, double price){
-        return new VehicleForm(null,model,price,year,null);
+    VehicleForm createVehicle(String model, int year, double price, Long marcaId){
+        return new VehicleForm(null,model,price,year,null, marcaId);
     }
 
     Marca createMarca(Marca marca){
@@ -37,8 +37,8 @@ public class VehicleServiceTest {
         double price = 2000;
         VehicleService vehicleService = setup();
         Marca marca =  createMarca(new MarcaDummy(1L,"Audi"));
-        VehicleForm vehicle = createVehicle(model, year, price);
-        Vehicle savedVehicle = vehicleService.createVehicle(vehicle, marca.getId());
+        VehicleForm vehicle = createVehicle(model, year, price, marca.getId());
+        Vehicle savedVehicle = vehicleService.createVehicle(vehicle);
         assertEquals(savedVehicle.getId(), 1L);
         assertEquals(savedVehicle.getModel(), model);
         assertEquals(savedVehicle.getPrice(), price);
@@ -53,8 +53,56 @@ public class VehicleServiceTest {
         double price = 2000;
         Long marcaId = 404L;
         VehicleService vehicleService = setup();
-        VehicleForm vehicle = createVehicle(model, year, price);
-        NotFoundException notFoundException = assertThrows(NotFoundException.class,()->vehicleService.createVehicle(vehicle, marcaId));
+        VehicleForm vehicle = createVehicle(model, year, price, marcaId);
+        NotFoundException notFoundException = assertThrows(
+                NotFoundException.class,()->vehicleService.createVehicle(vehicle)
+        );
         assertEquals("Marca not found", notFoundException.getMessage());
+    }
+
+    @Test
+    public  void shouldReturnAnUpddateVehicle() throws NotFoundException {
+        Marca marca =  createMarca(new MarcaDummy(1L,"Audi"));
+        Vehicle savedVehicle = this.vehicleRepository.save(createVehicle("Audi",2010,1000, marca.getId()));
+        String model = "Ford k";
+        int year = 2016;
+        double price = 3200;
+        VehicleService vehicleService = setup();
+        VehicleForm vehicle = createVehicle(model, year, price, marca.getId());
+        Vehicle updatedVehicle = vehicleService.updateVehicle(vehicle, savedVehicle.getId());
+        assertEquals(marca.getId(), updatedVehicle.getMarca().getId());
+        assertEquals(year, updatedVehicle.getYear());
+        assertEquals(price, updatedVehicle.getPrice());
+        assertEquals(model, updatedVehicle.getModel());
+    }
+    @Test
+    public  void shouldReturnAnErrorOnUpdateAVehicleWhenTheMarcaDoesntExists() throws NotFoundException {
+        Long marcaId = 200L;
+        Vehicle savedVehicle = this.vehicleRepository.save(createVehicle("Audi",2010,1000, marcaId));
+        String model = "Ford k";
+        int year = 2016;
+        double price = 3200;
+        VehicleService vehicleService = setup();
+        VehicleForm vehicle = createVehicle(model, year, price, marcaId);
+        NotFoundException notFoundException = assertThrows(
+                NotFoundException.class,
+                ()->vehicleService.updateVehicle(vehicle,savedVehicle.getId())
+        );
+        assertEquals("Marca not found",notFoundException.getMessage());
+    }
+    @Test
+    public  void shouldReturnAnErrorOnUpdateAVehicleWhenTheVehicleDoesntExists() throws NotFoundException {
+        Marca marca =  createMarca(new MarcaDummy(1L,"Audi"));
+        Long vehicleId = 200L;
+        String model = "Ford k";
+        int year = 2016;
+        double price = 3200;
+        VehicleService vehicleService = setup();
+        VehicleForm vehicle = createVehicle(model, year, price, marca.getId());
+        NotFoundException notFoundException = assertThrows(
+                NotFoundException.class,
+                ()->vehicleService.updateVehicle(vehicle, vehicleId)
+        );
+        assertEquals("Vehicle not found",notFoundException.getMessage());
     }
 }
