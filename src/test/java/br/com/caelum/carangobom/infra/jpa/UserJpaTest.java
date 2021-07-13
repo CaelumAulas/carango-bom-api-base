@@ -5,6 +5,8 @@ import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,23 @@ class UserJpaTest {
     @Autowired
     UserRepository userRepositoryJpa;
 
+    @BeforeEach
+    void setup() {
+        CreateUserRequest request = new CreateUserRequest();
+        request.setUsername("standard");
+        request.setPassword("123456");
+
+        userRepositoryJpa.save(request.toUser());
+
+        CreateUserRequest request2 = new CreateUserRequest();
+        request2.setUsername("admin");
+        request2.setPassword("123456");
+
+        userRepositoryJpa.save(request2.toUser());
+    }
+
     @Test
     void testCreateSuccess() {
-        setup();
         assertEquals(2, userRepositoryJpa.findAll().size());
 
         CreateUserRequest request = new CreateUserRequest();
@@ -55,8 +71,6 @@ class UserJpaTest {
 
     @Test
     void testDeleteUserSuccess() {
-        setup();
-
         assertDoesNotThrow(() -> {
             userRepositoryJpa.delete(userRepositoryJpa.findAll().get(0).getId());
 
@@ -71,14 +85,12 @@ class UserJpaTest {
     @Test
     void testDeleteUserFail() {
         assertThrows(NotFoundException.class, () -> {
-            userRepositoryJpa.delete(1L);
+            userRepositoryJpa.delete(100L);
         });
     }
 
     @Test
     void testGetDetailedUserSuccess() {
-        setup();
-
         assertDoesNotThrow(() -> {
             User requestedUser = userRepositoryJpa.findAll().get(0);
             User userResponse = userRepositoryJpa.findById(
@@ -104,21 +116,7 @@ class UserJpaTest {
     @Test
     void testGetDetailedUserFail() {
         assertThrows(NotFoundException.class, () -> {
-            userRepositoryJpa.findById(1L);
+            userRepositoryJpa.findById(100L);
         });
-    }
-
-    private void setup() {
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard");
-        request.setPassword("123456");
-
-        userRepositoryJpa.save(request.toUser());
-
-        CreateUserRequest request2 = new CreateUserRequest();
-        request2.setUsername("admin");
-        request2.setPassword("123456");
-
-        userRepositoryJpa.save(request2.toUser());
     }
 }

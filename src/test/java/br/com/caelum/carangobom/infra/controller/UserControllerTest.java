@@ -8,6 +8,7 @@ import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserRespons
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -27,9 +28,23 @@ class UserControllerTest {
     @Autowired
     private UserController userController;
 
+    @BeforeEach
+    void setup() {
+        CreateUserRequest request = new CreateUserRequest();
+        request.setUsername("standard");
+        request.setPassword("123456");
+
+        userController.createUser(request, UriComponentsBuilder.newInstance());
+
+        CreateUserRequest request2 = new CreateUserRequest();
+        request2.setUsername("admin");
+        request2.setPassword("123456");
+
+        userController.createUser(request2, UriComponentsBuilder.newInstance());
+    }
+
     @Test
     void testCreateSuccess() {
-        setup();
         assertEquals(2, userController.getUsers().size());
 
         CreateUserRequest request = new CreateUserRequest();
@@ -59,7 +74,6 @@ class UserControllerTest {
 
     @Test
     void testDeleteUserSuccess() {
-        setup();
         List<GetUserResponse> users = userController.getUsers();
 
         ResponseEntity<Void> response = userController.deleteUser(users.get(0).getId());
@@ -77,13 +91,12 @@ class UserControllerTest {
 
     @Test
     void testDeleteUserFail() {
-        ResponseEntity<Void> response = userController.deleteUser(1L);
+        ResponseEntity<Void> response = userController.deleteUser(100L);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     void testGetDetailedUserSuccess() {
-        setup();
         List<GetUserResponse> users = userController.getUsers();
 
         ResponseEntity<GetDetailedUserResponse> userResponse = userController.getDetailedUser(users.get(0).getId());
@@ -105,21 +118,7 @@ class UserControllerTest {
 
     @Test
     void testGetDetailedUserFail() {
-        ResponseEntity<GetDetailedUserResponse> userResponse = userController.getDetailedUser(1L);
+        ResponseEntity<GetDetailedUserResponse> userResponse = userController.getDetailedUser(100L);
         assertEquals(HttpStatus.NOT_FOUND, userResponse.getStatusCode());
-    }
-
-    private void setup() {
-        CreateUserRequest request = new CreateUserRequest();
-        request.setUsername("standard");
-        request.setPassword("123456");
-
-        userController.createUser(request, UriComponentsBuilder.newInstance());
-
-        CreateUserRequest request2 = new CreateUserRequest();
-        request2.setUsername("admin");
-        request2.setPassword("123456");
-
-        userController.createUser(request2, UriComponentsBuilder.newInstance());
     }
 }
