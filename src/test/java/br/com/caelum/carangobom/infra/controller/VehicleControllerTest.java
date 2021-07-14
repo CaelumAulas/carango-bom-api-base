@@ -1,37 +1,32 @@
 package br.com.caelum.carangobom.infra.controller;
 
-import br.com.caelum.carangobom.CarangoBomApiApplication;
-import br.com.caelum.carangobom.domain.entity.Vehicle;
 import br.com.caelum.carangobom.infra.controller.request.CreateVehicleRequest;
 import br.com.caelum.carangobom.infra.jpa.entity.MarcaJpa;
 import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.persistence.EntityManager;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { CarangoBomApiApplication.class })
-@WebAppConfiguration
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
+@WithMockUser
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class VehicleControllerTest {
-    @Autowired
-    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -39,8 +34,8 @@ class VehicleControllerTest {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
     private MockMvc mockMvc;
-
 
     private MarcaJpa createMarca(MarcaJpa marcaJpa){
         entityManager.persist(marcaJpa);
@@ -50,11 +45,6 @@ class VehicleControllerTest {
     private VehicleJpa createVehicle(VehicleJpa vehicleJpa){
         entityManager.persist(vehicleJpa);
         return vehicleJpa;
-    }
-
-    @BeforeEach
-    public void setup() {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
     @Test
