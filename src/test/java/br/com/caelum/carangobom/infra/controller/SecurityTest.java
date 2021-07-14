@@ -99,4 +99,11 @@ class SecurityTest {
                         .header("Authorization", decoded.getType() + " " + decoded.getToken())
         ).andDo(print()).andExpect(status().isCreated());
     }
+
+    @Test
+    void testCors() throws Exception {
+        mockMvc.perform(get("/users").header("Origin", "https://wrong.com"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
