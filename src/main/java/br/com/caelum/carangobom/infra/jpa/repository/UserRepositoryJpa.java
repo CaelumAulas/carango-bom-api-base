@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -33,6 +34,7 @@ public class UserRepositoryJpa implements UserRepository {
 
     @Override
     public User save(User userRequest) {
+        userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
         entityManager.persist(userRequest);
         return userRequest;
     }
@@ -43,15 +45,23 @@ public class UserRepositoryJpa implements UserRepository {
     }
 
     @Override
-    public User findById(Long id) throws NotFoundException {
+    public Optional<User> findById(Long id) {
         Optional<User> optionalUser = locateUser(id);
 
-        if(!optionalUser.isPresent()) {
-            throw new NotFoundException("Resource '" + id + "' not found");
+        return optionalUser;
+    }
 
+    @Override
+    public Optional<User> findByUsername(String username) {
+        List<User> users = entityManager.createQuery("SELECT u FROM user_entity u WHERE username=:username", User.class)
+                .setParameter("username", username)
+                .getResultList();
+
+        if(username.isEmpty()) {
+            return Optional.empty();
         }
 
-        return optionalUser.get();
+        return Optional.of(users.get(0));
     }
 
     private Optional<User> locateUser(Long id) {
@@ -63,6 +73,6 @@ public class UserRepositoryJpa implements UserRepository {
             return Optional.empty();
         }
 
-        return Optional.ofNullable(users.get(0));
+        return Optional.of(users.get(0));
     }
 }

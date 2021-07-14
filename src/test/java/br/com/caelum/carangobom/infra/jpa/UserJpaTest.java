@@ -16,6 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -93,30 +95,26 @@ class UserJpaTest {
     void testGetDetailedUserSuccess() {
         assertDoesNotThrow(() -> {
             User requestedUser = userRepositoryJpa.findAll().get(0);
-            User userResponse = userRepositoryJpa.findById(
-                    requestedUser.getId()
-            );
+            Optional<User> userResponse = userRepositoryJpa.findById(requestedUser.getId());
             assertNotNull(userResponse);
-            assertEquals(requestedUser.getId(), userResponse.getId());
-            assertEquals(requestedUser.getUsername(), userResponse.getUsername());
+            assertTrue(userResponse.isPresent());
+            assertEquals(requestedUser.getId(), userResponse.get().getId());
+            assertEquals(requestedUser.getUsername(), userResponse.get().getUsername());
         });
 
         assertDoesNotThrow(() -> {
             User requestedUser = userRepositoryJpa.findAll().get(1);
-            User userResponse = userRepositoryJpa.findById(
-                    requestedUser.getId()
-            );
+            Optional<User> userResponse = userRepositoryJpa.findById(requestedUser.getId());
             assertNotNull(userResponse);
-            assertEquals(requestedUser.getId(), userResponse.getId());
-            assertEquals(requestedUser.getUsername(), userResponse.getUsername());
+            assertTrue(userResponse.isPresent());
+            assertEquals(requestedUser.getId(), userResponse.get().getId());
+            assertEquals(requestedUser.getUsername(), userResponse.get().getUsername());
 
         });
     }
 
     @Test
     void testGetDetailedUserFail() {
-        assertThrows(NotFoundException.class, () -> {
-            userRepositoryJpa.findById(100L);
-        });
+        assertFalse(userRepositoryJpa.findById(100L).isPresent());
     }
 }

@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository {
 
@@ -13,5 +14,7 @@ public interface UserRepository {
 
     List<User> findAll();
 
-    User findById(Long id) throws NotFoundException;
+    Optional<User> findById(Long id);
+
+    Optional<User> findByUsername(String username);
 }
