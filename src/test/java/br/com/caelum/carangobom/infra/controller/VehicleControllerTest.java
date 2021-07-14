@@ -146,7 +146,7 @@ class VehicleControllerTest {
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(vehicleJpa.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.model").value(model))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(price))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(year))

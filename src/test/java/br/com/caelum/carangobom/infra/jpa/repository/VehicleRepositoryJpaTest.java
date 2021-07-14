@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import java.util.Optional;
 
 @DataJpaTest
+@ActiveProfiles(profiles = {"test"})
 class VehicleRepositoryJpaTest {
 
     @Autowired
@@ -44,6 +46,24 @@ class VehicleRepositoryJpaTest {
         assertNotNull(savedVehicle.getId());
         assertEquals(savedVehicle.getModel(), model);
         assertEquals(savedVehicle.getPrice(), price);
+        assertEquals(savedVehicle.getYear(), year);
+        assertEquals(savedVehicle.getMarca().getId(), marcaJpa.getId());
+    }
+
+    @Test
+    void shouldSaveAnVehicleThatAlreadyExists(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        String model = "audi r8";
+        int year = 2000;
+        double price = 20000;
+        double newPrice = 44444;
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa(null,"Audi"));
+        VehicleJpa vehicleJpa = this.createVehicle(new VehicleJpa(null,model,year,price,marcaJpa));
+        vehicleJpa.setPrice(newPrice);
+        Vehicle savedVehicle = vehicleRepositoryJpa.save(vehicleJpa);
+        assertEquals(vehicleJpa.getId(), savedVehicle.getId());
+        assertEquals(savedVehicle.getModel(), model);
+        assertEquals(savedVehicle.getPrice(), newPrice);
         assertEquals(savedVehicle.getYear(), year);
         assertEquals(savedVehicle.getMarca().getId(), marcaJpa.getId());
     }

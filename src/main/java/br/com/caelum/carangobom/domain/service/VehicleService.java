@@ -49,6 +49,6 @@ public class VehicleService {
         savedVehicle.setModel(vehicle.getModel());
         savedVehicle.setPrice(vehicle.getPrice());
         savedVehicle.setYear(vehicle.getYear());
-        return this.vehicleRepository.save(vehicle);
+        return this.vehicleRepository.save(savedVehicle);
     }
 }

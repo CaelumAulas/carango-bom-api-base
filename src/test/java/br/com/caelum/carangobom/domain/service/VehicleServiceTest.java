@@ -75,6 +75,23 @@ class VehicleServiceTest {
         assertEquals(price, updatedVehicle.getPrice());
         assertEquals(model, updatedVehicle.getModel());
     }
+
+    @Test
+    void shouldReturnAnUpddateVehicleWithoutChangeMarca() throws NotFoundException {
+        Marca marca =  createMarca(new MarcaDummy(1L,"Audi"));
+        Vehicle savedVehicle = this.vehicleRepository.save(createVehicle("Audi",2010,1000, marca.getId()));
+        String model = "Ford k";
+        int year = 2016;
+        double price = 3200;
+        VehicleService vehicleService = setup();
+        VehicleForm vehicle = createVehicle(model, year, price, null);
+        Vehicle updatedVehicle = vehicleService.updateVehicle(vehicle, savedVehicle.getId());
+        assertEquals(marca.getId(), updatedVehicle.getMarca().getId());
+        assertEquals(year, updatedVehicle.getYear());
+        assertEquals(price, updatedVehicle.getPrice());
+        assertEquals(model, updatedVehicle.getModel());
+    }
+
     @Test
     void shouldReturnAnErrorOnUpdateAVehicleWhenTheMarcaDoesntExists() throws NotFoundException {
         Long marcaId = 200L;

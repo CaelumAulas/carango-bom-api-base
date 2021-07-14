@@ -28,7 +28,11 @@ public class VehicleRepositoryJpa implements VehicleRepository {
     @Override
     public Vehicle save(Vehicle vehicle) {
         VehicleJpa vehicleJpa = vehicleToVehicleJpa(vehicle);
-        this.entityManager.persist(vehicleJpa);
+        if(vehicle.getId() != null){
+            this.entityManager.merge(vehicleJpa);
+        }else {
+            this.entityManager.persist(vehicleJpa);
+        }
         return vehicleJpa;
     }
 

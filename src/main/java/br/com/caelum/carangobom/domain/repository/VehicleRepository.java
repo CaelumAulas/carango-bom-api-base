@@ -6,6 +6,5 @@ import java.util.Optional;
 
 public interface VehicleRepository {
     Vehicle save(Vehicle vehicle);
-
     Optional<Vehicle> findById(Long vehicleId);
 }
