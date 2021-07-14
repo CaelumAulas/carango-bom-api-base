@@ -39,6 +39,7 @@ public class MarcaRepositoryMock implements MarcaRepository {
 		if(marca.getId() == null) {
 			marca.setId(this.generateId());
 		}
+		marcas = this.marcas.stream().filter(m->!m.getId().equals(marca.getId())).collect(Collectors.toList());
 		marcas.add((MarcaDummy)marca);
 		return marca;
 	}
