@@ -31,7 +31,7 @@ class MarcaRepositoryJpaTest {
         MarcaRepositoryJpa marcaRepositoryJpa = createMarcaJpaRepository();
         MarcaJpa marcaJpa = new MarcaJpa("Audi");
         marcaRepositoryJpa.save(marcaJpa);
-        assertEquals(1L, marcaJpa.getId());
+        assertNotNull(marcaJpa.getId());
         assertEquals("Audi", marcaJpa.getNome());
     }
 
