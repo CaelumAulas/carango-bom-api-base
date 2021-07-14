@@ -33,7 +33,6 @@ public class AuthenticationController {
             String generatedToken = tokenService.generateToken(auth);
             return ResponseEntity.ok(new AuthenticationResponse(generatedToken, "Bearer"));
         } catch (AuthenticationException e) {
-            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

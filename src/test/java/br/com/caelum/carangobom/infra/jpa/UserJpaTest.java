@@ -117,4 +117,19 @@ class UserJpaTest {
     void testGetDetailedUserFail() {
         assertFalse(userRepositoryJpa.findById(100L).isPresent());
     }
+
+    @Test
+    void testGetByUsername() {
+        Optional<User> userOptional = userRepositoryJpa.findByUsername("standard");
+        assertNotNull(userOptional);
+        assertTrue(userOptional.isPresent());
+        assertEquals("standard", userOptional.get().getUsername());
+    }
+
+    @Test
+    void testGetByUsernameFail() {
+        Optional<User> userOptional = userRepositoryJpa.findByUsername("incorrect");
+        assertNotNull(userOptional);
+        assertFalse(userOptional.isPresent());
+    }
 }

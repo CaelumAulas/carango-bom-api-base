@@ -69,6 +69,15 @@ class SecurityTest {
     }
 
     @Test
+    void testAuthenticationBadCredentials() throws Exception {
+        AuthenticationRequest request = new AuthenticationRequest("wrong", "123456");
+        mockMvc.perform(
+                post("/auth").contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request))
+        ).andExpect(status().isBadRequest()).andDo(print());
+    }
+
+    @Test
     void createUserAuthenticated() throws Exception {
         AuthenticationRequest request = new AuthenticationRequest("admin", "123456");
         String response = mockMvc.perform(

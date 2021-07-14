@@ -57,7 +57,7 @@ public class UserRepositoryJpa implements UserRepository {
                 .setParameter("username", username)
                 .getResultList();
 
-        if(username.isEmpty()) {
+        if(users.isEmpty()) {
             return Optional.empty();
         }
 
