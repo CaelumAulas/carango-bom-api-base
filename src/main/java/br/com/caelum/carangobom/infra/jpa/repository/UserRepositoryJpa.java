@@ -46,9 +46,7 @@ public class UserRepositoryJpa implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) {
-        Optional<User> optionalUser = locateUser(id);
-
-        return optionalUser;
+        return locateUser(id);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package br.com.caelum.carangobom.infra.config.security;
 
 import br.com.caelum.carangobom.domain.entity.User;
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -36,9 +38,10 @@ public class TokenFilterAuthentication extends OncePerRequestFilter {
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 
+    @SneakyThrows
     private void authenticate(String token) {
         Long id = tokenService.getUserId(token);
-        User user = userRepository.findById(id).get();
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found user"));
 
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
