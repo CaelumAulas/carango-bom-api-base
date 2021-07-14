@@ -42,9 +42,7 @@ public class VehicleService {
             throw new NotFoundException("Vehicle not found");
         }
         Vehicle savedVehicle = optionalSavedVehicle.get();
-        if(vehicle.getMarcaId() != null){
-            this.setMarcaOnVehicle(vehicle, vehicle.getMarcaId());
-        }
+        this.setMarcaOnVehicle(vehicle, vehicle.getMarcaId());
         savedVehicle.setMarca(vehicle.getMarca());
         savedVehicle.setModel(vehicle.getModel());
         savedVehicle.setPrice(vehicle.getPrice());
