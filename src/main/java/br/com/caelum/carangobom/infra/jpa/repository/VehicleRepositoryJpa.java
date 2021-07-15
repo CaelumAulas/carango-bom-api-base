@@ -49,16 +49,16 @@ public class VehicleRepositoryJpa implements VehicleRepository {
 
     @Override
     public Page<Vehicle> getAll(Pageable pageable) {
-        List vehicleList;
+        List<Vehicle> vehicleList;
         if(pageable.isPaged()){
             Query query = entityManager.createQuery("From vehicle");
             query.setFirstResult((int) pageable.getOffset());
             query.setMaxResults(pageable.getPageSize());
             vehicleList = query.getResultList();
         }else{
-            vehicleList = entityManager.createQuery("Select v from vehicle v",VehicleJpa.class).getResultList();
+            vehicleList = entityManager.createQuery("Select v from vehicle v",Vehicle.class).getResultList();
         }
         Long countResult = entityManager.createQuery("Select count(v.id) From vehicle v", Long.class).getSingleResult();
-        return new PageImpl(vehicleList, pageable ,countResult);
+        return new PageImpl<Vehicle>(vehicleList, pageable ,countResult);
     }
 }

@@ -52,8 +52,6 @@ public class VehicleController {
 
     @GetMapping
     public Page<VehicleResponse> getAllVehicles(Pageable pagination){
-        System.out.println(pagination.getPageNumber());
-        System.out.println(pagination.getPageSize());
         return this.vehicleService.listVehicle(pagination).map(VehicleResponse::new);
     }
 }
