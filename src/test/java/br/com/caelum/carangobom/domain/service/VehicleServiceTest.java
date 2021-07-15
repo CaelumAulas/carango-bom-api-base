@@ -3,16 +3,23 @@ package br.com.caelum.carangobom.domain.service;
 import br.com.caelum.carangobom.domain.entity.Marca;
 import br.com.caelum.carangobom.domain.entity.MarcaDummy;
 import br.com.caelum.carangobom.domain.entity.Vehicle;
-import br.com.caelum.carangobom.domain.entity.VehicleDummy;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
+import br.com.caelum.carangobom.domain.entity.form.PageableDummy;
 import br.com.caelum.carangobom.domain.entity.form.VehicleForm;
 import br.com.caelum.carangobom.domain.repository.MarcaRepository;
 import br.com.caelum.carangobom.domain.repository.MarcaRepositoryMock;
 import br.com.caelum.carangobom.domain.repository.VehicleRepository;
 import br.com.caelum.carangobom.domain.repository.VehicleRepositoryMock;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.DirtiesContext;;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class VehicleServiceTest {
 
     private MarcaRepository marcaRepository = new MarcaRepositoryMock();
@@ -91,6 +98,7 @@ class VehicleServiceTest {
         );
         assertEquals("Marca not found",notFoundException.getMessage());
     }
+
     @Test
     void shouldReturnAnErrorOnUpdateAVehicleWhenTheVehicleDoesntExists() throws NotFoundException {
         Marca marca =  createMarca(new MarcaDummy(1L,"Audi"));
@@ -105,5 +113,41 @@ class VehicleServiceTest {
                 ()->vehicleService.updateVehicle(vehicle, vehicleId)
         );
         assertEquals("Vehicle not found",notFoundException.getMessage());
+    }
+
+    @Test
+    void shouldReturnAListWithTheVehicles(){
+        Marca marca = createMarca(new MarcaDummy(1L, "Audi"));
+        List<VehicleForm> vehicles = Arrays.asList(
+                createVehicle("Audi A", 2010, 1000.0, marca.getId()),
+                createVehicle("Audi B", 2011, 2000.0, marca.getId()),
+                createVehicle("Audi C", 2012, 3000.0, marca.getId()),
+                createVehicle("Audi D", 2013, 4000.0, marca.getId()),
+                createVehicle("Audi E", 2014, 5000.0, marca.getId())
+        );
+        vehicles.forEach((vehicleForm)->this.vehicleRepository.save(vehicleForm));
+        VehicleService vehicleService = setup();
+        Page<Vehicle> vehicleList = vehicleService.listVehicle(Pageable.unpaged());
+        assertEquals(vehicles,vehicleList.toList());
+    }
+
+    @Test
+    void shouldReturnAPaginatedListWithTheVehicles(){
+        Marca marca = createMarca(new MarcaDummy(1L, "Audi"));
+        List<VehicleForm> vehicles = Arrays.asList(
+                createVehicle("Audi A", 2010, 1000.0, marca.getId()),
+                createVehicle("Audi B", 2011, 2000.0, marca.getId()),
+                createVehicle("Audi C", 2012, 3000.0, marca.getId()),
+                createVehicle("Audi D", 2013, 4000.0, marca.getId()),
+                createVehicle("Audi E", 2014, 5000.0, marca.getId())
+        );
+        vehicles.forEach((vehicleForm)->this.vehicleRepository.save(vehicleForm));
+        VehicleService vehicleService = setup();
+        PageableDummy pageableDummy = new PageableDummy(0,3,null);
+        Page<Vehicle> vehicleList = vehicleService.listVehicle(pageableDummy);
+        assertEquals(5,vehicleList.getTotalElements());
+        assertEquals(3,vehicleList.toList().size());
+        assertEquals(2, vehicleList.getTotalPages());
+        assertEquals(vehicles.subList(0,3),vehicleList.toList());
     }
 }
