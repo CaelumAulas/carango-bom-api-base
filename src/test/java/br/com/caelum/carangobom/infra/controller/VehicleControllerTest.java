@@ -263,4 +263,45 @@ class VehicleControllerTest {
         }
     }
 
+    @Test
+    void shouldReturnAVehilceUsingId() throws Exception {
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa("Ford"));
+        VehicleJpa vehicleJpa = createVehicle(new VehicleJpa(null,"Ford k",2002,15000.0,marcaJpa));
+        ResultActions resultActions = mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/vehicle/{id}", vehicleJpa.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .queryParam("page","0")
+                                .queryParam("size","2")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.marca.id").value(vehicleJpa.getMarca().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.marca.nome").value(vehicleJpa.getMarca().getNome()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(vehicleJpa.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.model").value(vehicleJpa.getModel()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(vehicleJpa.getPrice()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.year").value(vehicleJpa.getYear()));
+    }
+
+    @Test
+    void shouldReturn404OnFindByIdWhenVehicleDoesntExist() throws Exception {
+        Long id = 404L;
+        ResultActions resultActions = mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .get("/vehicle/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .queryParam("page","0")
+                                .queryParam("size","2")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+
+
 }

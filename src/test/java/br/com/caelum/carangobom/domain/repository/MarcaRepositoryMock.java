@@ -18,11 +18,12 @@ public class MarcaRepositoryMock implements MarcaRepository {
 				.stream()
 				.map(MarcaDummy::getId)
 				.collect(Collectors.toList());
-		Long maxId = Collections.max(ids);
-		if(maxId==null) {
-			maxId = 0L;
+		if(ids.isEmpty()){
+			return 1L;
+		}else{
+			Long maxId = Collections.max(ids);
+			return maxId+1;
 		}
-		return maxId+1;
 	}
 	
 	@Override

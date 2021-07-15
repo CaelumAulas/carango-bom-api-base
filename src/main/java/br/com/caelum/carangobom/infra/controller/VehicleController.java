@@ -54,4 +54,14 @@ public class VehicleController {
     public Page<VehicleResponse> getAllVehicles(Pageable pagination){
         return this.vehicleService.listVehicle(pagination).map(VehicleResponse::new);
     }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<Vehicle> findVehicle(@PathVariable Long id) {
+        try {
+            Vehicle vehicle = this.vehicleService.getVehicleById(id);
+            return ResponseEntity.ok(vehicle);
+        } catch (NotFoundException exception) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
