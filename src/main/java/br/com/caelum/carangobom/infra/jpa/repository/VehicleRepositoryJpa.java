@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @Transactional
@@ -28,6 +29,17 @@ public class VehicleRepositoryJpa implements VehicleRepository {
 
     private VehicleJpa vehicleToVehicleJpa(Vehicle vehicle){
         return new VehicleJpa(vehicle);
+    }
+
+    private List<Vehicle> getAllVehicles(){
+        return entityManager.createQuery("Select v from vehicle v").getResultList();
+    }
+
+    private List<Vehicle> getVehiclePage(Pageable pageable){
+        Query query = entityManager.createQuery("From vehicle",VehicleJpa.class);
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+        return query.getResultList();
     }
 
     @Override
@@ -51,14 +63,16 @@ public class VehicleRepositoryJpa implements VehicleRepository {
     public Page<Vehicle> getAll(Pageable pageable) {
         List<Vehicle> vehicleList;
         if(pageable.isPaged()){
-            Query query = entityManager.createQuery("From vehicle");
-            query.setFirstResult((int) pageable.getOffset());
-            query.setMaxResults(pageable.getPageSize());
-            vehicleList = query.getResultList();
+            vehicleList = this.getVehiclePage(pageable);
         }else{
-            vehicleList = entityManager.createQuery("Select v from vehicle v",Vehicle.class).getResultList();
+            vehicleList = this.getAllVehicles();
         }
         Long countResult = entityManager.createQuery("Select count(v.id) From vehicle v", Long.class).getSingleResult();
-        return new PageImpl<>(vehicleList, pageable, countResult);
+
+        return new PageImpl<>(
+                vehicleList,
+                pageable,
+                countResult
+        );
     }
 }
