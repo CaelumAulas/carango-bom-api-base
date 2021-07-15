@@ -75,7 +75,7 @@ class MarcaServiceTest {
 	
 	@Test
 	void shouldCreateAMarca() {
-		MarcaDummy marcaDummy = new MarcaDummy("Audi");
+		MarcaDummy marcaDummy = new MarcaDummy(1L,"Audi");
 		List<MarcaDummy> mockMarcasList = Lists.newArrayList(marcaDummy);
 
 		this.marcaRepository.setMarcas(mockMarcasList);
