@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @Service
 public class VehicleService {
@@ -63,5 +64,9 @@ public class VehicleService {
         }else {
             throw new NotFoundException("Vehicle not found");
         }
+    }
+
+    public void deleteVehicleById(Long id) throws NotFoundException {
+        this.vehicleRepository.deleteVehicle(id);
     }
 }
