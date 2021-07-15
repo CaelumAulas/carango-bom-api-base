@@ -55,4 +55,13 @@ public class VehicleService {
     public Page<Vehicle> listVehicle(Pageable pageable) {
         return this.vehicleRepository.getAll(pageable);
     }
+
+    public Vehicle getVehicleById(Long id) throws NotFoundException {
+        Optional<Vehicle> vehicle = this.vehicleRepository.findById(id);
+        if(vehicle.isPresent()){
+            return vehicle.get();
+        }else {
+            throw new NotFoundException("Vehicle not found");
+        }
+    }
 }

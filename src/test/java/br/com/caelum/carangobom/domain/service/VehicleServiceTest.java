@@ -3,6 +3,7 @@ package br.com.caelum.carangobom.domain.service;
 import br.com.caelum.carangobom.domain.entity.Marca;
 import br.com.caelum.carangobom.domain.entity.MarcaDummy;
 import br.com.caelum.carangobom.domain.entity.Vehicle;
+import br.com.caelum.carangobom.domain.entity.VehicleDummy;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.entity.form.PageableDummy;
 import br.com.caelum.carangobom.domain.entity.form.VehicleForm;
@@ -149,5 +150,28 @@ class VehicleServiceTest {
         assertEquals(3,vehicleList.toList().size());
         assertEquals(2, vehicleList.getTotalPages());
         assertEquals(vehicles.subList(0,3),vehicleList.toList());
+    }
+
+    @Test
+    void shouldGetAVehicleById() throws NotFoundException {
+        Marca marca = createMarca(new MarcaDummy(null, "Audi"));
+        Vehicle vehicle = this.vehicleRepository.save(
+                new VehicleForm(null,"Audi R8",1000000.0,2021,marca,marca.getId())
+        );
+        VehicleService vehicleService = setup();
+        Vehicle foundVehicle = vehicleService.getVehicleById(vehicle.getId());
+        assertEquals(vehicle.getPrice(), foundVehicle.getPrice());
+        assertEquals(vehicle.getYear(), foundVehicle.getYear());
+        assertEquals(vehicle.getModel(), foundVehicle.getModel());
+        assertEquals(vehicle.getMarca().getId(), foundVehicle.getMarca().getId());
+    }
+
+    @Test
+    void shouldThrowNotFoundWhenFindVehicleById(){
+        Long id = 1000L;
+        VehicleService vehicleService = setup();
+        assertThrows(NotFoundException.class,()->{
+            Vehicle foundVehicle = vehicleService.getVehicleById(id);
+        });
     }
 }
