@@ -59,6 +59,6 @@ public class VehicleRepositoryJpa implements VehicleRepository {
             vehicleList = entityManager.createQuery("Select v from vehicle v",Vehicle.class).getResultList();
         }
         Long countResult = entityManager.createQuery("Select count(v.id) From vehicle v", Long.class).getSingleResult();
-        return new PageImpl<Vehicle>(vehicleList, pageable, countResult);
+        return new PageImpl<>(vehicleList, pageable, countResult);
     }
 }
