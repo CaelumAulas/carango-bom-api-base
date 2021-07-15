@@ -6,6 +6,8 @@ import br.com.caelum.carangobom.domain.service.VehicleService;
 import br.com.caelum.carangobom.infra.controller.request.CreateVehicleRequest;
 import br.com.caelum.carangobom.infra.controller.response.VehicleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -46,6 +48,10 @@ public class VehicleController {
         } catch (NotFoundException exception) {
             return ResponseEntity.notFound().build();
         }
+    }
 
+    @GetMapping
+    public Page<VehicleResponse> getAllVehicles(Pageable pagination){
+        return this.vehicleService.listVehicle(pagination).map(VehicleResponse::new);
     }
 }

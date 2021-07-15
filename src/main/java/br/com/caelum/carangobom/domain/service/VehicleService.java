@@ -7,6 +7,8 @@ import br.com.caelum.carangobom.domain.entity.form.VehicleForm;
 import br.com.caelum.carangobom.domain.repository.MarcaRepository;
 import br.com.caelum.carangobom.domain.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -48,5 +50,9 @@ public class VehicleService {
         savedVehicle.setPrice(vehicle.getPrice());
         savedVehicle.setYear(vehicle.getYear());
         return this.vehicleRepository.save(savedVehicle);
+    }
+
+    public Page<Vehicle> listVehicle(Pageable pageable) {
+        return this.vehicleRepository.getAll(pageable);
     }
 }

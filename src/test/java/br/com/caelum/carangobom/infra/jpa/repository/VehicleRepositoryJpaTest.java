@@ -1,16 +1,22 @@
 package br.com.caelum.carangobom.infra.jpa.repository;
 
 import br.com.caelum.carangobom.domain.entity.Vehicle;
+import br.com.caelum.carangobom.domain.entity.form.PageableDummy;
 import br.com.caelum.carangobom.infra.jpa.entity.MarcaJpa;
 import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -19,6 +25,12 @@ class VehicleRepositoryJpaTest {
 
     @Autowired
     private EntityManager entityManager;
+
+    @BeforeEach
+    void clearDatabase(){
+        this.entityManager.createQuery("delete from vehicle");
+        this.entityManager.createQuery("delete from marca");
+    }
 
     VehicleRepositoryJpa setup(){
         return new VehicleRepositoryJpa(this.entityManager);
@@ -102,5 +114,56 @@ class VehicleRepositoryJpaTest {
         Long vehicleId = 100L;
         Optional<Vehicle> optionalVehicle = vehicleRepositoryJpa.findById(vehicleId);
         assertFalse(optionalVehicle.isPresent());
+    }
+
+    @Test
+    void shouldReturnAllVehicles(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        MarcaJpa marcaJpa = createMarca(new MarcaJpa(null,"Audi"));
+        List<Vehicle> vehicles = Arrays.asList(
+            createVehicle(new VehicleJpa(null, "Audi A", 2010, 10000.0, marcaJpa)),
+            createVehicle(new VehicleJpa(null, "Audi B", 2011, 20000.0, marcaJpa)),
+            createVehicle(new VehicleJpa(null, "Audi C", 2012, 30000.0, marcaJpa)),
+            createVehicle(new VehicleJpa(null, "Audi D", 2013, 40000.0, marcaJpa)),
+            createVehicle(new VehicleJpa(null, "Audi E", 2014, 50000.0, marcaJpa)),
+            createVehicle(new VehicleJpa(null, "Audi F", 2016, 60000.0, marcaJpa))
+        );
+        Page<Vehicle> vehiclePage =  vehicleRepositoryJpa.getAll(Pageable.unpaged());
+        assertEquals(6, vehiclePage.getTotalElements());
+        assertEquals(1, vehiclePage.getTotalPages());
+        assertEquals(6, vehiclePage.getContent().size());
+        for (int i = 0; i < vehiclePage.getSize(); i++) {
+            assertEquals(vehicles.get(i).getId(), vehiclePage.getContent().get(i).getId());
+            assertEquals(vehicles.get(i).getModel(), vehiclePage.getContent().get(i).getModel());
+            assertEquals(vehicles.get(i).getMarca().getId(), vehiclePage.getContent().get(i).getMarca().getId());
+            assertEquals(vehicles.get(i).getYear(), vehiclePage.getContent().get(i).getYear());
+            assertEquals(vehicles.get(i).getPrice(), vehiclePage.getContent().get(i).getPrice());
+        }
+    }
+
+    @Test
+    void shouldReturnAllVehiclesPaginated(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        MarcaJpa marcaJpa = createMarca(new MarcaJpa(null,"Audi"));
+        List<Vehicle> vehicles = Arrays.asList(
+                createVehicle(new VehicleJpa(null, "Audi A", 2010, 10000.0, marcaJpa)),
+                createVehicle(new VehicleJpa(null, "Audi B", 2011, 20000.0, marcaJpa)),
+                createVehicle(new VehicleJpa(null, "Audi C", 2012, 30000.0, marcaJpa)),
+                createVehicle(new VehicleJpa(null, "Audi D", 2013, 40000.0, marcaJpa)),
+                createVehicle(new VehicleJpa(null, "Audi E", 2014, 50000.0, marcaJpa)),
+                createVehicle(new VehicleJpa(null, "Audi F", 2016, 60000.0, marcaJpa))
+        );
+
+        Page<Vehicle> vehiclePage =  vehicleRepositoryJpa.getAll(new PageableDummy(0,3,null));
+        assertEquals(6, vehiclePage.getTotalElements());
+        assertEquals(2, vehiclePage.getTotalPages());
+        assertEquals(3, vehiclePage.toList().size());
+        for (int i = 0; i < vehiclePage.getSize(); i++) {
+            assertEquals(vehicles.get(i).getId(), vehiclePage.getContent().get(i).getId());
+            assertEquals(vehicles.get(i).getModel(), vehiclePage.getContent().get(i).getModel());
+            assertEquals(vehicles.get(i).getMarca().getId(), vehiclePage.getContent().get(i).getMarca().getId());
+            assertEquals(vehicles.get(i).getYear(), vehiclePage.getContent().get(i).getYear());
+            assertEquals(vehicles.get(i).getPrice(), vehiclePage.getContent().get(i).getPrice());
+        }
     }
 }
