@@ -51,18 +51,24 @@ public class UserRepositoryJpa implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        User user = entityManager.createQuery("SELECT u FROM user_entity u WHERE username=:username", User.class)
+        List<User> user = entityManager.createQuery("SELECT u FROM user_entity u WHERE username=:username", User.class)
                 .setParameter("username", username)
-                .getSingleResult();
+                .getResultList();
 
-        return Optional.ofNullable(user);
+        if(user.isEmpty())
+            return Optional.empty();
+
+        return Optional.ofNullable(user.get(0));
     }
 
     private Optional<User> locateUser(Long id) {
-        User user = entityManager.createQuery("SELECT u FROM user_entity u WHERE id=:id", User.class)
+        List<User> user = entityManager.createQuery("SELECT u FROM user_entity u WHERE id=:id", User.class)
                 .setParameter("id", id)
-                .getSingleResult();
+                .getResultList();
 
-        return Optional.ofNullable(user);
+        if(user.isEmpty())
+            return Optional.empty();
+
+        return Optional.ofNullable(user.get(0));
     }
 }
