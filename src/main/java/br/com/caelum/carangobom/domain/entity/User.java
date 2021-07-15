@@ -1,6 +1,8 @@
 package br.com.caelum.carangobom.domain.entity;
 
-public interface User {
+import org.springframework.security.core.userdetails.UserDetails;
+
+public interface User extends UserDetails {
     void setId(Long id);
     Long getId();
     String getUsername();

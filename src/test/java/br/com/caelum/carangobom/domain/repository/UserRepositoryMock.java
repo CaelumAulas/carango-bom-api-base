@@ -35,13 +35,14 @@ public class UserRepositoryMock implements UserRepository {
     }
 
     @Override
-    public User findById(Long id) throws NotFoundException {
+    public Optional<User> findById(Long id) {
         Optional<User> optionalUser = this.users.stream().filter(user -> user.getId().equals(id)).findFirst();
-        if(!optionalUser.isPresent()) {
-            throw new NotFoundException("Resource not found");
-        }
+        return optionalUser;
+    }
 
-        return optionalUser.get();
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return Optional.empty();
     }
 
     private Long generateId() {

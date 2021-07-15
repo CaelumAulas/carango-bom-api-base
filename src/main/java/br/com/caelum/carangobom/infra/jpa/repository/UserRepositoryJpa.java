@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -33,6 +34,7 @@ public class UserRepositoryJpa implements UserRepository {
 
     @Override
     public User save(User userRequest) {
+        userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
         entityManager.persist(userRequest);
         return userRequest;
     }
@@ -43,26 +45,30 @@ public class UserRepositoryJpa implements UserRepository {
     }
 
     @Override
-    public User findById(Long id) throws NotFoundException {
-        Optional<User> optionalUser = locateUser(id);
+    public Optional<User> findById(Long id) {
+        return locateUser(id);
+    }
 
-        if(!optionalUser.isPresent()) {
-            throw new NotFoundException("Resource '" + id + "' not found");
+    @Override
+    public Optional<User> findByUsername(String username) {
+        List<User> user = entityManager.createQuery("SELECT u FROM user_entity u WHERE username=:username", User.class)
+                .setParameter("username", username)
+                .getResultList();
 
-        }
+        if(user.isEmpty())
+            return Optional.empty();
 
-        return optionalUser.get();
+        return Optional.ofNullable(user.get(0));
     }
 
     private Optional<User> locateUser(Long id) {
-        List<User> users = entityManager.createQuery("SELECT u FROM user_entity u WHERE id=:id", User.class)
+        List<User> user = entityManager.createQuery("SELECT u FROM user_entity u WHERE id=:id", User.class)
                 .setParameter("id", id)
                 .getResultList();
 
-        if(users.isEmpty()) {
+        if(user.isEmpty())
             return Optional.empty();
-        }
 
-        return Optional.ofNullable(users.get(0));
+        return Optional.ofNullable(user.get(0));
     }
 }
