@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.infra.jpa.repository;
 
 import br.com.caelum.carangobom.domain.entity.Vehicle;
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.entity.form.PageableDummy;
 import br.com.caelum.carangobom.infra.jpa.entity.MarcaJpa;
 import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
@@ -167,5 +168,29 @@ class VehicleRepositoryJpaTest {
             assertEquals(vehicles.get(i).getYear(), vehiclePage.getContent().get(i).getYear());
             assertEquals(vehicles.get(i).getPrice(), vehiclePage.getContent().get(i).getPrice());
         }
+    }
+
+    @Test
+    void shouldDeleteAVehicle(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        String model = "audi r8";
+        int year = 2000;
+        double price = 20000;
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa(null,"Audi"));
+        VehicleJpa vehicleJpa = createVehicle(new VehicleJpa(null, model, year, price, marcaJpa));
+        assertDoesNotThrow(()->{
+            vehicleRepositoryJpa.deleteVehicle(vehicleJpa.getId());
+        });
+        Vehicle deletedVehicle = this.entityManager.find(VehicleJpa.class, vehicleJpa.getId());
+        assertNull(deletedVehicle);
+    }
+
+    @Test
+    void shouldThrowNotFoundonDeleteAVehicleWhenVehicleDoesNotExists(){
+        VehicleRepositoryJpa vehicleRepositoryJpa = setup();
+        Long id = 404L;
+        assertThrows(NotFoundException.class, ()->{
+            vehicleRepositoryJpa.deleteVehicle(id);
+        });
     }
 }
