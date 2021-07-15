@@ -64,4 +64,8 @@ public class VehicleService {
             throw new NotFoundException("Vehicle not found");
         }
     }
+
+    public void deleteVehicleById(Long id) throws NotFoundException {
+        this.vehicleRepository.deleteVehicle(id);
+    }
 }

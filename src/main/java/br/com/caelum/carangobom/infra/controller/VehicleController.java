@@ -64,4 +64,14 @@ public class VehicleController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        try {
+            this.vehicleService.deleteVehicleById(id);
+            return ResponseEntity.ok().build();
+        }catch (NotFoundException exception){
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

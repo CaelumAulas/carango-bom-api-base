@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.domain.repository;
 
 import br.com.caelum.carangobom.domain.entity.Vehicle;
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class VehicleRepositoryMock implements VehicleRepository {
 
@@ -46,5 +48,16 @@ public class VehicleRepositoryMock implements VehicleRepository {
                     this.vehicleList.size()
             );
         }
+    }
+
+    @Override
+    public void deleteVehicle(Long id) throws NotFoundException {
+        Optional<Vehicle> optionalVehicle = this.findById(id);
+        if(optionalVehicle.isPresent()){
+            this.vehicleList = this.vehicleList.stream().filter(vehicle -> vehicle.getId() != id).collect(Collectors.toList());
+        }else{
+            throw new NotFoundException("Vehicle not found");
+        }
+
     }
 }

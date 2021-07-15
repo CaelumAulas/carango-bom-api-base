@@ -302,6 +302,39 @@ class VehicleControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
+    @Test
+    void shouldDeleteAVehicleUsingId() throws Exception {
+        MarcaJpa marcaJpa = this.createMarca(new MarcaJpa("Ford"));
+        VehicleJpa vehicleJpa = createVehicle(new VehicleJpa(null,"Ford k",2002,15000.0,marcaJpa));
+        ResultActions resultActions = mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .delete("/vehicle/{id}", vehicleJpa.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .queryParam("page","0")
+                                .queryParam("size","2")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void shouldReturn404OnDeleteWhenVehicleDoesntExist() throws Exception {
+        Long id = 404L;
+        ResultActions resultActions = mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .delete("/vehicle/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .queryParam("page","0")
+                                .queryParam("size","2")
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
 
 
 }

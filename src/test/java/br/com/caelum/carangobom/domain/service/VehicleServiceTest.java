@@ -174,4 +174,26 @@ class VehicleServiceTest {
             Vehicle foundVehicle = vehicleService.getVehicleById(id);
         });
     }
+
+    @Test
+    void shouldDeleteAVehicleById() throws NotFoundException {
+        Marca marca = createMarca(new MarcaDummy(null, "Audi"));
+        Vehicle vehicle = this.vehicleRepository.save(
+                new VehicleForm(null,"Audi R8",1000000.0,2021,marca,marca.getId())
+        );
+        VehicleService vehicleService = setup();
+        vehicleService.deleteVehicleById(vehicle.getId());
+        assertEquals(0,this.vehicleRepository.getAll(Pageable.unpaged()).getContent().size());
+    }
+
+    @Test
+    void shouldThrowNotFoundOnDeleteAVehicleByIdWhenVehicleDoesNotExists(){
+        Long id = 404L;
+        VehicleService vehicleService = setup();
+        assertThrows(NotFoundException.class,()->{
+            vehicleService.deleteVehicleById(id);
+        });
+    }
+
+
 }

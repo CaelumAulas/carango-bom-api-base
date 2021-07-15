@@ -1,6 +1,7 @@
 package br.com.caelum.carangobom.infra.jpa.repository;
 
 import br.com.caelum.carangobom.domain.entity.Vehicle;
+import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.VehicleRepository;
 import br.com.caelum.carangobom.infra.jpa.entity.VehicleJpa;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
@@ -73,5 +75,16 @@ public class VehicleRepositoryJpa implements VehicleRepository {
                 pageable,
                 countResult
         );
+    }
+
+    @Override
+    public void deleteVehicle(Long id) throws NotFoundException {
+        try {
+            VehicleJpa vehicleJpa = this.entityManager.getReference(VehicleJpa.class,id);
+            this.entityManager.remove(vehicleJpa);
+        }catch (EntityNotFoundException exception){
+            throw new NotFoundException("Vehicle not found");
+        }
+
     }
 }
