@@ -1,14 +1,19 @@
 package br.com.caelum.carangobom.domain.service;
 
 
+import br.com.caelum.carangobom.domain.config.security.TokenServiceMock;
 import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.UserDummy;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
+import br.com.caelum.carangobom.domain.entity.exception.PasswordMismatchException;
+import br.com.caelum.carangobom.domain.entity.form.UpdatePasswordForm;
 import br.com.caelum.carangobom.domain.repository.UserRepositoryMock;
 import static org.junit.jupiter.api.Assertions.*;
 
 import br.com.caelum.carangobom.infra.config.security.TokenService;
+import br.com.caelum.carangobom.infra.controller.request.AuthenticationRequest;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -22,7 +27,8 @@ class UserServiceTest {
 
     private final UserRepositoryMock userRepository = new UserRepositoryMock();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    private final UserService userService = new UserService(userRepository, new TokenService(), passwordEncoder);
+    private final TokenService tokenService = new TokenServiceMock();
+    private final UserService userService = new UserService(userRepository, tokenService, passwordEncoder);
 
     @Test
     void testBeanValidationFail() {
@@ -85,7 +91,6 @@ class UserServiceTest {
     void testFindByIdSuccess() {
         String password = "123456";
         UserDummy request = new UserDummy(1L, "standard user", password);
-        String encoded = passwordEncoder.encode(password);
         userService.create(request);
 
         assertDoesNotThrow(() -> {
@@ -158,6 +163,36 @@ class UserServiceTest {
             user = userService.findById(0L);
             assertEquals("different", user.getUsername());
         });
+    }
 
+    @Test
+    void testUpdatePasswordSuccess() {
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
+        userService.create(request);
+
+        UsernamePasswordAuthenticationToken auth =
+                new AuthenticationRequest("standard user", "123456").parseUsernamePasswordAuthenticationToken();
+
+        String token = tokenService.generateToken(auth);
+
+        assertDoesNotThrow(() -> {
+            userService.updatePassword(new UpdatePasswordForm("123456", "newPassword"), "Bearer " + token);
+            passwordEncoder.matches("newPassword", request.getPassword());
+        });
+    }
+
+    @Test
+    void testUpdatePasswordFail() {
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
+        userService.create(request);
+
+        UsernamePasswordAuthenticationToken auth =
+                new AuthenticationRequest("standard user", "123456").parseUsernamePasswordAuthenticationToken();
+
+        String token = tokenService.generateToken(auth);
+
+        assertThrows(PasswordMismatchException.class, () -> {
+            userService.updatePassword(new UpdatePasswordForm("wrong", "newPassword"), "Bearer " + token);
+        });
     }
 }

@@ -10,6 +10,7 @@ import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +76,8 @@ public class UserController {
             userService.updatePassword(request.toForm(), authorization);
         } catch (PasswordMismatchException e) {
             return ResponseEntity.badRequest().body(new UpdatePasswordResponse("The old password doesn't match"));
+        } catch (NotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(new UpdatePasswordResponse("Password Successfully updated"));

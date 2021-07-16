@@ -45,11 +45,17 @@ public class UserService {
         return userRepository.update(request);
     }
 
-    public void updatePassword(UpdatePasswordForm form, String authorization) throws PasswordMismatchException {
+    public void updatePassword(UpdatePasswordForm form, String authorization)
+            throws PasswordMismatchException, NotFoundException {
+
         String token = authorization.substring(7);
         Long id = tokenService.getUserId(token);
 
         Optional<User> optionalUser = userRepository.findById(id);
+
+        if(!optionalUser.isPresent()) {
+            throw new NotFoundException("Resource with id '" + id + "' couldn't be resolved");
+        }
 
         User user = optionalUser.get();
 
