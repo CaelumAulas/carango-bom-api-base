@@ -15,7 +15,7 @@ public class UserRepositoryMock implements UserRepository {
 
     @Override
     public void delete(Long id) throws NotFoundException {
-        if(!this.users.stream().anyMatch(user -> user.getId().equals(id))) {
+        if(this.users.stream().noneMatch(user -> user.getId().equals(id))) {
             throw new NotFoundException("Resource not found");
         }
         this.users.removeIf(user -> user.getId().equals(id));
@@ -30,14 +30,18 @@ public class UserRepositoryMock implements UserRepository {
     }
 
     @Override
+    public User update(User user) {
+        return null;
+    }
+
+    @Override
     public List<User> findAll() {
         return this.users;
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        Optional<User> optionalUser = this.users.stream().filter(user -> user.getId().equals(id)).findFirst();
-        return optionalUser;
+        return this.users.stream().filter(user -> user.getId().equals(id)).findFirst();
     }
 
     @Override
@@ -46,6 +50,6 @@ public class UserRepositoryMock implements UserRepository {
     }
 
     private Long generateId() {
-        return this.users.stream().max(Comparator.comparingLong(User::getId)).map(User::getId).orElseGet(() -> 0L);
+        return this.users.stream().max(Comparator.comparingLong(User::getId)).map(User::getId).orElse(0L);
     }
 }
