@@ -2,12 +2,16 @@ package br.com.caelum.carangobom.infra.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import br.com.caelum.carangobom.infra.config.security.TokenService;
+import br.com.caelum.carangobom.infra.controller.request.AuthenticationRequest;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
+import br.com.caelum.carangobom.infra.controller.request.UpdatePasswordRequest;
 import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import java.util.List;
 
+import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +19,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.xml.ws.Response;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -27,6 +35,10 @@ class UserControllerTest {
 
     @Autowired
     private UserController userController;
+    @Autowired
+    private TokenService tokenService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @BeforeEach
     void setup() {
@@ -120,5 +132,18 @@ class UserControllerTest {
     void testGetDetailedUserFail() {
         ResponseEntity<GetDetailedUserResponse> userResponse = userController.getDetailedUser(100L);
         assertEquals(HttpStatus.NOT_FOUND, userResponse.getStatusCode());
+    }
+
+    @Test
+    void testUpdatePasswordSuccess() {
+        AuthenticationRequest request = new AuthenticationRequest("admin", "123456");
+        UsernamePasswordAuthenticationToken token = request.parseUsernamePasswordAuthenticationToken();
+        String finalToken = tokenService.generateToken(authenticationManager.authenticate(token));
+
+        UpdatePasswordRequest updatePasswordRequest = new UpdatePasswordRequest();
+        updatePasswordRequest.setOldPassword("123456");
+        updatePasswordRequest.setNewPassword("654321");
+
+        userController.updatePassword(updatePasswordRequest, "Bearer " + finalToken);
     }
 }
