@@ -15,7 +15,7 @@ public class UserRepositoryMock implements UserRepository {
 
     @Override
     public void delete(Long id) throws NotFoundException {
-        if(!this.users.stream().anyMatch(user -> user.getId().equals(id))) {
+        if(this.users.stream().noneMatch(user -> user.getId().equals(id))) {
             throw new NotFoundException("Resource not found");
         }
         this.users.removeIf(user -> user.getId().equals(id));
@@ -27,6 +27,11 @@ public class UserRepositoryMock implements UserRepository {
         this.users.add(user);
 
         return user;
+    }
+
+    @Override
+    public User update(User user) {
+        return null;
     }
 
     @Override

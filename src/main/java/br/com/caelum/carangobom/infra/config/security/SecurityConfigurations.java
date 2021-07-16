@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
@@ -32,10 +33,16 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         return super.authenticationManager();
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(authenticationService).passwordEncoder(new BCryptPasswordEncoder());
+        auth.userDetailsService(authenticationService).passwordEncoder(passwordEncoder());
     }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()

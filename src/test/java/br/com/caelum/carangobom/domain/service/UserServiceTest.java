@@ -6,7 +6,11 @@ import br.com.caelum.carangobom.domain.entity.UserDummy;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepositoryMock;
 import static org.junit.jupiter.api.Assertions.*;
+
+import br.com.caelum.carangobom.infra.config.security.TokenService;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -17,7 +21,8 @@ import java.util.Set;
 class UserServiceTest {
 
     private final UserRepositoryMock userRepository = new UserRepositoryMock();
-    private final UserService userService = new UserService(userRepository);
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserService userService = new UserService(userRepository, new TokenService(), passwordEncoder);
 
     @Test
     void testBeanValidationFail() {
@@ -78,8 +83,9 @@ class UserServiceTest {
 
     @Test
     void testFindByIdSuccess() {
-        UserDummy request = new UserDummy(1L, "standard user", "123456");
-
+        String password = "123456";
+        UserDummy request = new UserDummy(1L, "standard user", password);
+        String encoded = passwordEncoder.encode(password);
         userService.create(request);
 
         assertDoesNotThrow(() -> {
@@ -87,7 +93,8 @@ class UserServiceTest {
             assertNotNull(user);
             assertEquals(0L, user.getId());
             assertEquals("standard user", user.getUsername());
-            assertEquals("123456", user.getPassword());
+            assertFalse(user.getPassword().equals(password));
+            assertTrue(passwordEncoder.matches(password, user.getPassword()));
         });
     }
 
@@ -135,5 +142,22 @@ class UserServiceTest {
         });
         assertEquals(0, userService.findAll().size());
         assertThrows(NotFoundException.class, () -> userService.delete(0L));
+    }
+
+    @Test
+    void testUpdate() {
+        UserDummy request = new UserDummy(1L, "standard user", "123456");
+
+        userService.create(request);
+        assertDoesNotThrow(() -> {
+            User user = userService.findById(0L);
+            user.setUsername("different");
+
+            userService.update(user);
+
+            user = userService.findById(0L);
+            assertEquals("different", user.getUsername());
+        });
+
     }
 }

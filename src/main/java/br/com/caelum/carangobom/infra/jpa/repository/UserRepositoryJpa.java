@@ -3,6 +3,7 @@ package br.com.caelum.carangobom.infra.jpa.repository;
 import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
+import br.com.caelum.carangobom.infra.jpa.entity.UserJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -34,7 +35,6 @@ public class UserRepositoryJpa implements UserRepository {
 
     @Override
     public User save(User userRequest) {
-        userRequest.setPassword(new BCryptPasswordEncoder().encode(userRequest.getPassword()));
         entityManager.persist(userRequest);
         return userRequest;
     }
@@ -59,6 +59,12 @@ public class UserRepositoryJpa implements UserRepository {
             return Optional.empty();
 
         return Optional.ofNullable(user.get(0));
+    }
+
+    @Override
+    public User update(User user) {
+        entityManager.persist(user);
+        return user;
     }
 
     private Optional<User> locateUser(Long id) {

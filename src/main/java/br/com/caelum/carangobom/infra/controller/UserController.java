@@ -1,13 +1,21 @@
 package br.com.caelum.carangobom.infra.controller;
 
+import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
+import br.com.caelum.carangobom.domain.entity.exception.PasswordMismatchException;
 import br.com.caelum.carangobom.domain.service.UserService;
+import br.com.caelum.carangobom.infra.config.security.TokenService;
 import br.com.caelum.carangobom.infra.controller.request.CreateUserRequest;
+import br.com.caelum.carangobom.infra.controller.request.UpdatePasswordRequest;
 import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
+import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,7 +32,7 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, TokenService tokenService) {
         this.userService = userService;
     }
 
@@ -61,5 +69,18 @@ public class UserController {
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/updatePassword")
+    @Transactional
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(@RequestBody @Valid UpdatePasswordRequest request,
+                                                                 @RequestHeader("Authorization") String authorization) {
+        try {
+            userService.updatePassword(request.toForm(), authorization);
+        } catch (PasswordMismatchException e) {
+            return ResponseEntity.badRequest().body(new UpdatePasswordResponse("The old password doesn't match"));
+        }
+
+        return ResponseEntity.ok(new UpdatePasswordResponse("Password Successfully updated"));
     }
 }
