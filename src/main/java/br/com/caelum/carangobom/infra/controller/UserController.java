@@ -1,6 +1,5 @@
 package br.com.caelum.carangobom.infra.controller;
 
-import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.entity.exception.PasswordMismatchException;
 import br.com.caelum.carangobom.domain.service.UserService;
@@ -11,11 +10,8 @@ import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;

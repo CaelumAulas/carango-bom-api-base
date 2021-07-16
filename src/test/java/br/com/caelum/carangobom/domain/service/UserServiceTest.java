@@ -93,7 +93,7 @@ class UserServiceTest {
             assertNotNull(user);
             assertEquals(0L, user.getId());
             assertEquals("standard user", user.getUsername());
-            assertFalse(user.getPassword().equals(password));
+            assertNotEquals(user.getPassword(), password);
             assertTrue(passwordEncoder.matches(password, user.getPassword()));
         });
     }

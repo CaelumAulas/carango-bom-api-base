@@ -3,9 +3,7 @@ package br.com.caelum.carangobom.infra.jpa.repository;
 import br.com.caelum.carangobom.domain.entity.User;
 import br.com.caelum.carangobom.domain.entity.exception.NotFoundException;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
-import br.com.caelum.carangobom.infra.jpa.entity.UserJpa;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

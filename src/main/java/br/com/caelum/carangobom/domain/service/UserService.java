@@ -7,7 +7,6 @@ import br.com.caelum.carangobom.domain.entity.form.UpdatePasswordForm;
 import br.com.caelum.carangobom.domain.repository.UserRepository;
 import br.com.caelum.carangobom.infra.config.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
