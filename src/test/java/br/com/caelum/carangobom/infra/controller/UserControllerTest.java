@@ -11,7 +11,6 @@ import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserRespons
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import java.util.List;
 
-import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.xml.ws.Response;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
