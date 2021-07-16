@@ -10,7 +10,9 @@ import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import java.util.List;
+import java.util.Objects;
 
+import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +143,9 @@ class UserControllerTest {
         updatePasswordRequest.setOldPassword("123456");
         updatePasswordRequest.setNewPassword("654321");
 
-        userController.updatePassword(updatePasswordRequest, "Bearer " + finalToken);
+        ResponseEntity<UpdatePasswordResponse> response = userController.updatePassword(updatePasswordRequest, "Bearer " + finalToken);
+        assertNotNull(response);
+        assertTrue(response.getStatusCode().is2xxSuccessful());
+        assertEquals("Password Successfully updated", Objects.requireNonNull(response.getBody()).getMessage());
     }
 }
