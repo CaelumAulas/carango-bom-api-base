@@ -195,4 +195,16 @@ class UserServiceTest {
             userService.updatePassword(new UpdatePasswordForm("wrong", "newPassword"), "Bearer " + token);
         });
     }
+
+    @Test
+    void testUpdatePasswordFail2() {
+        UsernamePasswordAuthenticationToken auth =
+                new AuthenticationRequest("standard user", "123456").parseUsernamePasswordAuthenticationToken();
+
+        String token = tokenService.generateToken(auth);
+
+        assertThrows(NotFoundException.class, () -> {
+            userService.updatePassword(new UpdatePasswordForm("wrong", "newPassword"), "Bearer " + token);
+        });
+    }
 }
