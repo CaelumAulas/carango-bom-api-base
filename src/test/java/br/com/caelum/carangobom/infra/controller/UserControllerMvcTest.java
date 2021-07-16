@@ -105,4 +105,27 @@ class UserControllerMvcTest {
         ).andExpect(status().isBadRequest())
         .andDo(print());
     }
+
+    @Test
+    void testUpdatePasswordFail() throws Exception {
+        AuthenticationRequest request = new AuthenticationRequest("admin", "123456");
+        String response = mockMvc.perform(
+                post("/auth").contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request))
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        ObjectMapper mapper = new ObjectMapper();
+        AuthenticationResponse decoded = mapper.readValue(response, AuthenticationResponse.class);
+
+        UpdatePasswordRequest requestUser = new UpdatePasswordRequest();
+        requestUser.setOldPassword("wrong");
+        requestUser.setNewPassword("123456");
+
+        mockMvc.perform(
+                put("/users/updatePassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(requestUser))
+                        .header("Authorization", decoded.getType() + " " + decoded.getToken())
+        ).andDo(print()).andExpect(status().isBadRequest()).andExpect(jsonPath("$.message", is("The old password doesn't match")));
+    }
 }
