@@ -10,7 +10,6 @@ import br.com.caelum.carangobom.infra.controller.response.CreateUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetDetailedUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.GetUserResponse;
 import br.com.caelum.carangobom.infra.controller.response.UpdatePasswordResponse;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
