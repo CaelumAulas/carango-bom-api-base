@@ -1,19 +1,12 @@
 package br.com.caelum.carangobom.infra.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import br.com.caelum.carangobom.domain.entity.Marca;
 import br.com.caelum.carangobom.infra.controller.request.CreateMarcaRequest;
 import br.com.caelum.carangobom.infra.controller.response.MarcaResponse;
 import br.com.caelum.carangobom.infra.jpa.entity.MarcaJpa;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -26,8 +19,9 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
