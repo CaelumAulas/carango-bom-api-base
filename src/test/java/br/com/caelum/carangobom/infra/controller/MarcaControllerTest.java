@@ -118,6 +118,7 @@ class MarcaControllerTest {
     }
 
     @Test
+    @DirtiesContext
     void shouldReturnAllMarcasOrderedByName(){
         ArrayList<MarcaJpa> marcas = new ArrayList<>(Arrays.asList(
            saveMarca("Audi"),
