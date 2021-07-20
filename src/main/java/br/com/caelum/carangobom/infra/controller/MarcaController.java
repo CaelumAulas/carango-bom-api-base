@@ -7,6 +7,8 @@ import br.com.caelum.carangobom.infra.controller.request.CreateMarcaRequest;
 import br.com.caelum.carangobom.infra.controller.response.MarcaResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,7 @@ public class MarcaController {
 
     @GetMapping
     @Transactional
+    @Cacheable(value = "brands")
     public List<MarcaResponse> lista() {
         return marcaService
         		.findAllByOrderByNome()
@@ -40,7 +43,7 @@ public class MarcaController {
     }
 
     @GetMapping("/{id}")
-    @Transactional
+    @Cacheable(key = "#id", value = "brands")
     public ResponseEntity<MarcaResponse> getMarcaById(@PathVariable Long id) {
         Optional<Marca> marca = marcaService.findById(id);
         if (marca.isPresent()) {
@@ -52,6 +55,7 @@ public class MarcaController {
 
     @PostMapping
     @Transactional
+    @CacheEvict(cacheNames = "brands", allEntries = true)
     public ResponseEntity<MarcaResponse> cadastra(@Valid @RequestBody CreateMarcaRequest marcaForm, UriComponentsBuilder uriBuilder) {
     	Marca marca = marcaService.create(marcaForm.toMarcaJpa());
         URI uri = uriBuilder.path("/marcas/{id}").buildAndExpand(marca.getId()).toUri();
@@ -60,6 +64,7 @@ public class MarcaController {
 
     @PutMapping("/{id}")
     @Transactional
+    @CacheEvict(cacheNames = "brands", allEntries = true)
     public ResponseEntity<MarcaResponse> altera(@PathVariable Long id, @Valid @RequestBody CreateMarcaRequest marcaForm) {
         try {
 			Marca updatedMarca =this.marcaService.update(marcaForm.toMarcaJpa(), id);
@@ -71,6 +76,7 @@ public class MarcaController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    @CacheEvict(cacheNames = "brands", allEntries = true)
     public ResponseEntity<Void> deleta(@PathVariable Long id) {
         try {
 			marcaService.deleteById(id);

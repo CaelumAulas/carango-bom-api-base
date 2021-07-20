@@ -2,6 +2,7 @@ package br.com.caelum.carangobom.infra.controller.response;
 
 import br.com.caelum.carangobom.domain.entity.Marca;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class MarcaResponse {
