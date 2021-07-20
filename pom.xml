@@ -16,8 +16,11 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<surefire.skip>false</surefire.skip>
-	</properties>
+        <surefire.skip>false</surefire.skip>
+        <sonar.projectKey>Acelera-6-G2_carango-bom-api</sonar.projectKey>
+        <sonar.organization>acelera-6-g2</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
 
 	<dependencies>
 		<dependency>
