@@ -17,49 +17,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
+@RequestMapping("/marcas")
 public class MarcaController {
 
-    private MarcaRepository mr;
+    private MarcaRepository  marcaRepository;
 
-    @Autowired
-    public MarcaController(MarcaRepository mr) {
-        this.mr = mr;
-    }
-
-    @GetMapping("/marcas")
-    @ResponseBody
+    @GetMapping
     @Transactional
     public List<Marca> lista() {
-        return mr.findAllByOrderByNome();
+        return marcaRepository.findAllByOrderByNome();
     }
 
-    @GetMapping("/marcas/{id}")
-    @ResponseBody
+    @GetMapping("{id}")
     @Transactional
     public ResponseEntity<Marca> id(@PathVariable Long id) {
-        Optional<Marca> m1 = mr.findById(id);
-        if (m1.isPresent()) {
-            return ResponseEntity.ok(m1.get());
+        Optional<Marca> marca = marcaRepository.findById(id);
+        if (marca.isPresent()) {
+            return ResponseEntity.ok(marca.get());
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/marcas")
-    @ResponseBody
+    @PostMapping
     @Transactional
     public ResponseEntity<Marca> cadastra(@Valid @RequestBody Marca m1, UriComponentsBuilder uriBuilder) {
-        Marca m2 = mr.save(m1);
+        Marca m2 = marcaRepository.save(m1);
         URI h = uriBuilder.path("/marcas/{id}").buildAndExpand(m1.getId()).toUri();
         return ResponseEntity.created(h).body(m2);
     }
 
-    @PutMapping("/marcas/{id}")
-    @ResponseBody
+    @PutMapping("{id}")
     @Transactional
     public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca m1) {
-        Optional<Marca> m2 = mr.findById(id);
+        Optional<Marca> m2 = marcaRepository.findById(id);
         if (m2.isPresent()) {
             Marca m3 = m2.get();
             m3.setNome(m1.getNome());
@@ -69,14 +61,13 @@ public class MarcaController {
         }
     }
 
-    @DeleteMapping("/marcas/{id}")
-    @ResponseBody
+    @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<Marca> deleta(@PathVariable Long id) {
-        Optional<Marca> m1 = mr.findById(id);
+        Optional<Marca> m1 = marcaRepository.findById(id);
         if (m1.isPresent()) {
             Marca m2 = m1.get();
-            mr.delete(m2);
+            marcaRepository.delete(m2);
             return ResponseEntity.ok(m2);
         } else {
             return ResponseEntity.notFound().build();
@@ -85,7 +76,6 @@ public class MarcaController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseBody
     public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
         List<ErroDeParametroOutputDto> l = new ArrayList<>();
         excecao.getBindingResult().getFieldErrors().forEach(e -> {
