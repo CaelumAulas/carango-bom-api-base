@@ -2,10 +2,10 @@ package br.com.caelum.carangobom.marca;
 
 import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
 import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +21,12 @@ import java.util.Optional;
 @RequestMapping("/marcas")
 public class MarcaController {
 
-    private MarcaRepository  marcaRepository;
+    private MarcaRepository marcaRepository;
+    
+    @Autowired
+    public MarcaController(MarcaRepository marcaRepository) {
+        this.marcaRepository = marcaRepository;
+    }
 
     @GetMapping
     @Transactional
@@ -42,20 +47,20 @@ public class MarcaController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<Marca> cadastra(@Valid @RequestBody Marca m1, UriComponentsBuilder uriBuilder) {
-        Marca m2 = marcaRepository.save(m1);
-        URI h = uriBuilder.path("/marcas/{id}").buildAndExpand(m1.getId()).toUri();
-        return ResponseEntity.created(h).body(m2);
+    public ResponseEntity<Marca> cadastra(@Valid @RequestBody Marca marcaForm, UriComponentsBuilder uriBuilder) {
+        Marca marca = marcaRepository.save(marcaForm);
+        URI  urlUri = uriBuilder.path("/marcas/{id}").buildAndExpand(marcaForm.getId()).toUri();
+        return ResponseEntity.created(urlUri).body(marca);
     }
 
     @PutMapping("{id}")
     @Transactional
-    public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca m1) {
-        Optional<Marca> m2 = marcaRepository.findById(id);
-        if (m2.isPresent()) {
-            Marca m3 = m2.get();
-            m3.setNome(m1.getNome());
-            return ResponseEntity.ok(m3);
+    public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca marcaForm) {
+        Optional<Marca> marcaOptional = marcaRepository.findById(id);
+        if (marcaOptional.isPresent()) {
+            Marca marca = marcaOptional.get();
+            marca.setNome(marcaForm.getNome());
+            return ResponseEntity.ok(marca);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -64,11 +69,11 @@ public class MarcaController {
     @DeleteMapping("{id}")
     @Transactional
     public ResponseEntity<Marca> deleta(@PathVariable Long id) {
-        Optional<Marca> m1 = marcaRepository.findById(id);
-        if (m1.isPresent()) {
-            Marca m2 = m1.get();
-            marcaRepository.delete(m2);
-            return ResponseEntity.ok(m2);
+        Optional<Marca> marcaOptional = marcaRepository.findById(id);
+        if (marcaOptional.isPresent()) {
+            Marca marca = marcaOptional.get();
+            marcaRepository.delete(marca);
+            return ResponseEntity.ok(marca);
         } else {
             return ResponseEntity.notFound().build();
         }
