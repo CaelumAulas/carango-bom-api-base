@@ -57,6 +57,7 @@ public class MarcaController {
     }
 
     @PutMapping("{id}")
+    @Transactional
     public ResponseEntity<MarcaDto> alterar(@PathVariable Long id, @Valid @RequestBody MarcaForm marcaForm) {
    
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
@@ -83,16 +84,16 @@ public class MarcaController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
-        List<ErroDeParametroOutputDto> l = new ArrayList<>();
-        excecao.getBindingResult().getFieldErrors().forEach(e -> {
-            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
-            d.setParametro(e.getField());
-            d.setMensagem(e.getDefaultMessage());
-            l.add(d);
+    public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecoes) {
+        List<ErroDeParametroOutputDto> listaDeErrosDto = new ArrayList<>();
+        excecoes.getBindingResult().getFieldErrors().forEach(excecao -> {
+            ErroDeParametroOutputDto erroDeParametro = new ErroDeParametroOutputDto();
+            erroDeParametro.setParametro(excecao.getField());
+            erroDeParametro.setMensagem(excecao.getDefaultMessage());
+            listaDeErrosDto.add(erroDeParametro);
         });
-        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
-        l2.setErros(l);
-        return l2;
+        ListaDeErrosOutputDto listaDeErros = new ListaDeErrosOutputDto();
+        listaDeErros.setErros(listaDeErrosDto);
+        return listaDeErros;
     }
 }

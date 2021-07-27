@@ -9,7 +9,12 @@ public class MarcaDto {
 	
 	public Long id;
 	public String nome;
-	
+
+	public MarcaDto(long id, String nome) {
+		this.id = id;
+		this.nome = nome;
+	}
+
 	public Long getId() {
 		return id;
 	}

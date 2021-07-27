@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -50,7 +51,9 @@ class MarcaControllerTest {
             .thenReturn(marcas);
 
         List<MarcaDto> resultado = marcaController.listar();
-        assertEquals(marcas, resultado);
+
+        assertNotNull(resultado);
+        assertEquals(resultado.size(), 3);
     }
 
     @Test
@@ -98,11 +101,17 @@ class MarcaControllerTest {
         when(marcaRepository.findById(1L))
             .thenReturn(Optional.of(audi));
 
-        ResponseEntity<Marca> resposta = marcaController.alterar(1L, new Marca(1L, "NOVA Audi"));
+        doReturn(audi).when(marcaRepository).getOne(1L);
+
+
+        MarcaForm audiAlteradoForm = new MarcaForm();
+        audiAlteradoForm.setNome("Nova Audi");
+
+        ResponseEntity<MarcaDto> resposta = marcaController.alterar(1L, audiAlteradoForm);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
-        Marca marcaAlterada = resposta.getBody();
-        assertEquals("NOVA Audi", marcaAlterada.getNome());
+        MarcaDto marcaAlterada = resposta.getBody();
+        assertEquals("Nova Audi", marcaAlterada.getNome());
     }
 
     @Test
@@ -110,7 +119,10 @@ class MarcaControllerTest {
         when(marcaRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<Marca> resposta = marcaController.alterar(1L, new Marca(1L, "NOVA Audi"));
+        MarcaForm audiAlteradoForm = new MarcaForm();
+        audiAlteradoForm.setNome("Ferrari");
+
+        ResponseEntity<MarcaDto> resposta = marcaController.alterar(1L, audiAlteradoForm);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 

@@ -21,7 +21,7 @@ public class MarcaForm {
     public Marca atualizar(Long id, MarcaRepository marcaRepository) {
     	Marca marca = marcaRepository.getOne(id);
     	marca.setNome(nome);
-    	return marcaRepository.save(marca);
+    	return marca;
     }
     
 }
