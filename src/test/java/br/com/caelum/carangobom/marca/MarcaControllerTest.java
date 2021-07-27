@@ -76,9 +76,11 @@ class MarcaControllerTest {
 
     @Test
     void deveResponderCreatedELocationQuandoCadastrarMarca() {
-        Marca nova = new Marca("Ferrari");
+        MarcaForm marcaForm = new MarcaForm();
+        marcaForm.setNome("Ferrari");
+        Marca marca = marcaForm.converter();
 
-        when(marcaRepository.save(nova))
+        when(marcaRepository.save(marca))
             .then(invocation -> {
                 Marca marcaSalva = invocation.getArgument(0, Marca.class);
                 marcaSalva.setId(1L);

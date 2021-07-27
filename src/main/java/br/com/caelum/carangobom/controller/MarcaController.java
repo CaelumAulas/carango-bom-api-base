@@ -1,7 +1,7 @@
 package br.com.caelum.carangobom.controller;
 
-
 import br.com.caelum.carangobom.controller.dto.MarcaDto;
+import br.com.caelum.carangobom.controller.form.MarcaForm;
 import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.repository.MarcaRepository;
 import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
@@ -39,8 +39,7 @@ public class MarcaController {
     }
 
     @GetMapping("{id}")
-    @Transactional
-    public ResponseEntity<Marca> id(@PathVariable Long id) {
+    public ResponseEntity<Marca> listarPorId(@PathVariable Long id) {
         Optional<Marca> marca = marcaRepository.findById(id);
         if (marca.isPresent()) {
             return ResponseEntity.ok(marca.get());
@@ -50,11 +49,11 @@ public class MarcaController {
     }
 
     @PostMapping
-    @Transactional
-    public ResponseEntity<Marca> cadastra(@Valid @RequestBody Marca marcaForm, UriComponentsBuilder uriBuilder) {
-        Marca marca = marcaRepository.save(marcaForm);
-        URI  urlUri = uriBuilder.path("/marcas/{id}").buildAndExpand(marcaForm.getId()).toUri();
-        return ResponseEntity.created(urlUri).body(marca);
+    public ResponseEntity<MarcaDto> cadastrar(@Valid @RequestBody MarcaForm marcaForm, UriComponentsBuilder uriBuilder){
+        Marca marca = marcaForm.converter();
+        marcaRepository.save(marca);
+        URI urlUri = uriBuilder.path("/marcas/{id}").buildAndExpand(marca.getId()).toUri();
+        return ResponseEntity.created(urlUri).body( new MarcaDto(marca));
     }
 
     @PutMapping("{id}")
