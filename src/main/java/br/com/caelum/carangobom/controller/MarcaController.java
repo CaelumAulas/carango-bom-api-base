@@ -33,14 +33,9 @@ public class MarcaController {
     }
 
     @GetMapping
-    public List<MarcaDto> lista(String nome) {
-    	if(nome == null) {
-			List<Marca> marcas = marcaRepository.findAllByOrderByNome();
-			return MarcaDto.toList(marcas);
-		}else {
-			List<Marca> marcas = marcaRepository.findByNome(nome);
-			return MarcaDto.toList(marcas);
-		}
+    public List<MarcaDto> listar() {
+        List<Marca> marcas = marcaRepository.findAllByOrderByNome();
+        return MarcaDto.toList(marcas);
     }
 
     @GetMapping("{id}")
@@ -64,7 +59,7 @@ public class MarcaController {
 
     @PutMapping("{id}")
     @Transactional
-    public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca marcaForm) {
+    public ResponseEntity<Marca> alterar(@PathVariable Long id, @Valid @RequestBody Marca marcaForm) {
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
         if (marcaOptional.isPresent()) {
             Marca marca = marcaOptional.get();
@@ -77,7 +72,7 @@ public class MarcaController {
 
     @DeleteMapping("{id}")
     @Transactional
-    public ResponseEntity<Marca> deleta(@PathVariable Long id) {
+    public ResponseEntity<Marca> deletar(@PathVariable Long id) {
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
         if (marcaOptional.isPresent()) {
             Marca marca = marcaOptional.get();
