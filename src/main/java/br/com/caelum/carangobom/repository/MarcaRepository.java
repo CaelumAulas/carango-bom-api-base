@@ -41,5 +41,6 @@ public interface MarcaRepository extends JpaRepository<Marca, Long>  {
     List<Marca> findAllByOrderByNome();
     
     List<Marca> findByNome(String nome);
+   
 
 }

@@ -3,8 +3,6 @@ package br.com.caelum.carangobom.controller.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import br.com.alura.forum.controller.dto.TopicoDto;
-import br.com.alura.forum.modelo.Topico;
 import br.com.caelum.carangobom.modelo.Marca;
 
 public class MarcaDto {

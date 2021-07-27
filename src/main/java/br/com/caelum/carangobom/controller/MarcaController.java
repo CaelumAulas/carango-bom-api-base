@@ -1,7 +1,6 @@
 package br.com.caelum.carangobom.controller;
 
-import br.com.alura.forum.controller.dto.TopicoDto;
-import br.com.alura.forum.modelo.Topico;
+
 import br.com.caelum.carangobom.controller.dto.MarcaDto;
 import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.repository.MarcaRepository;
@@ -34,7 +33,6 @@ public class MarcaController {
     }
 
     @GetMapping
-    @Transactional
     public List<MarcaDto> lista(String nome) {
     	if(nome == null) {
 			List<Marca> marcas = marcaRepository.findAllByOrderByNome();
