@@ -17,4 +17,11 @@ public class MarcaForm {
     public Marca converter() {
         return new Marca(nome);
     }
+    
+    public Marca atualizar(Long id, MarcaRepository marcaRepository) {
+    	Marca marca = marcaRepository.getOne(id);
+    	marca.setNome(nome);
+    	return marcaRepository.save(marca);
+    }
+    
 }

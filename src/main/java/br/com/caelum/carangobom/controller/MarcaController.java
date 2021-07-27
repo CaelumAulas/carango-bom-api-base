@@ -57,13 +57,12 @@ public class MarcaController {
     }
 
     @PutMapping("{id}")
-    @Transactional
-    public ResponseEntity<Marca> alterar(@PathVariable Long id, @Valid @RequestBody Marca marcaForm) {
+    public ResponseEntity<MarcaDto> alterar(@PathVariable Long id, @Valid @RequestBody MarcaForm marcaForm) {
+   
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
         if (marcaOptional.isPresent()) {
-            Marca marca = marcaOptional.get();
-            marca.setNome(marcaForm.getNome());
-            return ResponseEntity.ok(marca);
+        	Marca marca = marcaForm.atualizar(id, marcaRepository);
+            return ResponseEntity.ok(new MarcaDto(marca));
         } else {
             return ResponseEntity.notFound().build();
         }
