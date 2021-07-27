@@ -1,17 +1,17 @@
 package br.com.caelum.carangobom.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import br.com.caelum.carangobom.modelo.Marca;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
-public class MarcaRepository {
+public interface MarcaRepository extends JpaRepository<Marca, Long>  {
 
+	/*
     private EntityManager entityManager;
 
     @Autowired
@@ -36,5 +36,10 @@ public class MarcaRepository {
         return entityManager.createQuery("select m from Marca m order by m.nome", Marca.class)
                 .getResultList();
     }
+    */
+    
+    List<Marca> findAllByOrderByNome();
+    
+    List<Marca> findByNome(String nome);
 
 }

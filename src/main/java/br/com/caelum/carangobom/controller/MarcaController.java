@@ -1,5 +1,8 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.alura.forum.controller.dto.TopicoDto;
+import br.com.alura.forum.modelo.Topico;
+import br.com.caelum.carangobom.controller.dto.MarcaDto;
 import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.repository.MarcaRepository;
 import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
@@ -32,8 +35,14 @@ public class MarcaController {
 
     @GetMapping
     @Transactional
-    public List<Marca> lista() {
-        return marcaRepository.findAllByOrderByNome();
+    public List<MarcaDto> lista(String nome) {
+    	if(nome == null) {
+			List<Marca> marcas = marcaRepository.findAllByOrderByNome();
+			return MarcaDto.toList(marcas);
+		}else {
+			List<Marca> marcas = marcaRepository.findByNome(nome);
+			return MarcaDto.toList(marcas);
+		}
     }
 
     @GetMapping("{id}")
