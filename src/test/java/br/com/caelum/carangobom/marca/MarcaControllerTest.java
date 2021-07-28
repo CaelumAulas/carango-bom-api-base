@@ -53,7 +53,7 @@ class MarcaControllerTest {
         List<MarcaDto> resultado = marcaController.listar();
 
         assertNotNull(resultado);
-        assertEquals(resultado.size(), 3);
+        assertEquals(3, resultado.size());
     }
 
     @Test
@@ -81,7 +81,6 @@ class MarcaControllerTest {
     void deveResponderCreatedELocationQuandoCadastrarMarca() {
         MarcaForm marcaForm = new MarcaForm();
         marcaForm.setNome("Ferrari");
-        Marca marca = marcaForm.converter();
 
         when(marcaRepository.save(any(Marca.class))).then(i -> {
             Marca marcaSalva = i.getArgument(0, Marca.class);
