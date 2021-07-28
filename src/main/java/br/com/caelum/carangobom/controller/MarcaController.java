@@ -70,12 +70,12 @@ public class MarcaController {
 
     @DeleteMapping("{id}")
     @Transactional
-    public ResponseEntity<Marca> deletar(@PathVariable Long id) {
+    public ResponseEntity<MarcaDto> deletar(@PathVariable Long id) {
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
         if (marcaOptional.isPresent()) {
             Marca marca = marcaOptional.get();
             marcaRepository.delete(marca);
-            return ResponseEntity.ok(marca);
+            return ResponseEntity.ok(new MarcaDto(marca));
         } else {
             return ResponseEntity.notFound().build();
         }

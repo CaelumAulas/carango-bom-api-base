@@ -132,7 +132,7 @@ class MarcaControllerTest {
         when(marcaRepository.findById(1L))
             .thenReturn(Optional.of(audi));
 
-        ResponseEntity<Marca> resposta = marcaController.deletar(1L);
+        ResponseEntity<MarcaDto> resposta = marcaController.deletar(1L);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
         verify(marcaRepository).delete(audi);
     }
@@ -142,7 +142,7 @@ class MarcaControllerTest {
         when(marcaRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<Marca> resposta = marcaController.deletar(1L);
+        ResponseEntity<MarcaDto> resposta = marcaController.deletar(1L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
 
         verify(marcaRepository, never()).delete(any());
