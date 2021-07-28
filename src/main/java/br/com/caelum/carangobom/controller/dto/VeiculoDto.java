@@ -27,6 +27,10 @@ public class VeiculoDto {
         this.marca = marca;
     }
 
+    public VeiculoDto(Veiculo veiculo) {
+        this(veiculo.getId(), veiculo.getModelo(), veiculo.getAno(), veiculo.getValor(), veiculo.getMarca());
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,8 +52,6 @@ public class VeiculoDto {
     }
 
     public static List<VeiculoDto> toList(List<Veiculo> veiculos) {
-        return veiculos.stream().map(veiculo -> {
-            return new VeiculoDto(veiculo.getId(), veiculo.getModelo(), veiculo.getAno(), veiculo.getValor(), veiculo.getMarca());
-        }).collect(Collectors.toList());
+        return veiculos.stream().map(VeiculoDto::new).collect(Collectors.toList());
     }
 }

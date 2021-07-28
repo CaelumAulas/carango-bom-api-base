@@ -5,7 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -19,14 +22,19 @@ public class Veiculo {
     @NotBlank
     private String modelo;
 
-    @NotBlank
+    @NotNull
     private Date ano;
 
-    @NotBlank
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer=20, fraction=2)
     private BigDecimal valor;
 
     public Veiculo(){
 
+    }
+
+    public Veiculo(String modelo, Date ano, BigDecimal valor, Marca marca) {
+        this(null, modelo, ano, valor, marca);
     }
 
     public Veiculo(Long id, String modelo, Date ano, BigDecimal valor, Marca marca) {

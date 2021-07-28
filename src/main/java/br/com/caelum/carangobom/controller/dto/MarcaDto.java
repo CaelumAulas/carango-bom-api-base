@@ -15,18 +15,18 @@ public class MarcaDto {
 		this.nome = nome;
 	}
 
+	public MarcaDto(Marca marca) {
+		this.id = marca.getId();
+		this.nome = marca.getNome();
+	}
+
 	public Long getId() {
 		return id;
 	}
 	public String getNome() {
 		return nome;
 	}
-	
-	public MarcaDto(Marca marca) {
-		this.id = marca.getId();
-		this.nome = marca.getNome();
-	}
-	
+
 	public static List<MarcaDto> toList(List<Marca> marcas) {
 		return marcas.stream().map(MarcaDto::new).collect(Collectors.toList());
 	}
