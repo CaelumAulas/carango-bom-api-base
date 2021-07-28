@@ -51,7 +51,7 @@ public class MarcaController {
     @PostMapping
     public ResponseEntity<MarcaDto> cadastrar(@Valid @RequestBody MarcaForm marcaForm, UriComponentsBuilder uriBuilder){
         Marca marca = marcaForm.converter();
-        marcaRepository.save(marca);
+        marca = marcaRepository.save(marca);
         URI urlUri = uriBuilder.path("/marcas/{id}").buildAndExpand(marca.getId()).toUri();
         return ResponseEntity.created(urlUri).body( new MarcaDto(marca));
     }

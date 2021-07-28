@@ -83,12 +83,12 @@ class MarcaControllerTest {
         marcaForm.setNome("Ferrari");
         Marca marca = marcaForm.converter();
 
-        when(marcaRepository.save(marca))
-            .then(invocation -> {
-                Marca marcaSalva = invocation.getArgument(0, Marca.class);
-                marcaSalva.setId(1L);
-                return marcaSalva;
-            });
+        when(marcaRepository.save(any(Marca.class))).then(i -> {
+            Marca marcaSalva = i.getArgument(0, Marca.class);
+            marcaSalva.setId(1L);
+            return marcaSalva;
+        });
+
         ResponseEntity<MarcaDto> resposta = marcaController.cadastrar(marcaForm, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
         assertEquals("http://localhost:8080/marcas/1", resposta.getHeaders().getLocation().toString());
