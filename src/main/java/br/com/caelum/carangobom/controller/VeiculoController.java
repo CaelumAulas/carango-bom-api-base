@@ -32,6 +32,16 @@ public class VeiculoController {
         return VeiculoDto.toList(veiculos);
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<Veiculo> listarPorId(@PathVariable Long id) {
+        Optional<Veiculo> veiculo = veiculoRepository.findById(id);
+        if (veiculo.isPresent()) {
+            return ResponseEntity.ok(veiculo.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<VeiculoDto> cadastrar(@Valid @RequestBody VeiculoForm veiculoForm, UriComponentsBuilder uriBuilder){
         Veiculo veiculo = veiculoForm.converter();
