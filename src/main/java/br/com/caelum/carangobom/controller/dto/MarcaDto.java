@@ -4,27 +4,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.caelum.carangobom.modelo.Marca;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class MarcaDto {
 	
 	public Long id;
 	public String nome;
 
-	public MarcaDto(long id, String nome) {
-		this.id = id;
-		this.nome = nome;
-	}
-
 	public MarcaDto(Marca marca) {
 		this.id = marca.getId();
 		this.nome = marca.getNome();
-	}
-
-	public Long getId() {
-		return id;
-	}
-	public String getNome() {
-		return nome;
 	}
 
 	public static List<MarcaDto> toList(List<Marca> marcas) {

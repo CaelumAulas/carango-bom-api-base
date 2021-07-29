@@ -26,6 +26,7 @@ public class UsuarioController {
     public UsuarioController(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
+
     @GetMapping
     public List<UsuarioDto> listar() {
         List<Usuario> usuarios = usuarioRepository.findAllByOrderByNome();

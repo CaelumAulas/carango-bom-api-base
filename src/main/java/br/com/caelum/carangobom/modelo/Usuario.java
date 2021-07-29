@@ -23,7 +23,7 @@ public class Usuario {
     private  String email;
 
     @JsonIgnore
-    @Size(min = 60, max = 60)
+    @Size(min = 6, max = 60)
     @Column(length = 60, nullable = false)
     private String senha;
 
