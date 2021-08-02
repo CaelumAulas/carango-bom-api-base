@@ -15,13 +15,13 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String key;
 
-    private static final long expirationTime = 1800000;
+    private static final long EXPIRATION_TIME = 1800000;
 
     public String generateToken(Usuario usuario) {
         return Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setSubject(usuario.getId().toString())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
