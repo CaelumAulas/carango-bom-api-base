@@ -1,11 +1,7 @@
 package br.com.caelum.carangobom.controller.dto;
 
-import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.modelo.Usuario;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class AutenticacaoDto {

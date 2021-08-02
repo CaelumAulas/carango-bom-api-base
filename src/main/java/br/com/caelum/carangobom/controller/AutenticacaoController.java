@@ -25,6 +25,6 @@ public class AutenticacaoController {
     @PostMapping
     public ResponseEntity<AutenticacaoDto> login(@Valid @RequestBody AutenticacaoForm autenticacaoForm, UriComponentsBuilder uriBuilder) {
         AutenticacaoDto autenticacaoDto = usuarioAutenticacaoService.autenticar(autenticacaoForm);
-        return new ResponseEntity<AutenticacaoDto>(autenticacaoDto, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(autenticacaoDto, HttpStatus.ACCEPTED);
     }
 }

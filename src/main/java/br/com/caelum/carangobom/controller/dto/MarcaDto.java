@@ -1,7 +1,5 @@
 package br.com.caelum.carangobom.controller.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 import br.com.caelum.carangobom.modelo.Marca;
 import lombok.AllArgsConstructor;
