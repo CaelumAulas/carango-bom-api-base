@@ -5,6 +5,11 @@ import br.com.caelum.carangobom.controller.form.UsuarioForm;
 import br.com.caelum.carangobom.modelo.Usuario;
 import br.com.caelum.carangobom.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -28,8 +32,9 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public List<UsuarioDto> listar() {
-        List<Usuario> usuarios = usuarioRepository.findAllByOrderByNome();
+    @Cacheable(value = "listaDeUsuarios")
+    public Page<UsuarioDto> listar(@PageableDefault() Pageable paginacao) {
+        Page<Usuario> usuarios = usuarioRepository.findAll(paginacao);
         return UsuarioDto.toList(usuarios);
     }
 
@@ -40,6 +45,7 @@ public class UsuarioController {
     }
 
     @PostMapping
+    @CacheEvict(value = "listaDeUsuarios", allEntries = true)
     public ResponseEntity<UsuarioDto> cadastrar(@Valid @RequestBody UsuarioForm usuarioForm, UriComponentsBuilder uriBuilder) {
         Usuario usuario = usuarioForm.converter();
         usuario = usuarioRepository.save(usuario);
@@ -50,6 +56,7 @@ public class UsuarioController {
 
     @PutMapping("{id}")
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios", allEntries = true)
     public ResponseEntity<UsuarioDto> alterar(@PathVariable Long id, @Valid @RequestBody UsuarioForm usuarioForm){
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
         if(usuarioOptional.isPresent()){
@@ -62,6 +69,7 @@ public class UsuarioController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @CacheEvict(value = "listaDeUsuarios", allEntries = true)
     public ResponseEntity<UsuarioDto> deletar(@PathVariable Long id) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
         if(usuarioOptional.isPresent()){

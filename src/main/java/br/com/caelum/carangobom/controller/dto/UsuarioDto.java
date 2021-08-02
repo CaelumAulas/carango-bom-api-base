@@ -3,9 +3,7 @@ package br.com.caelum.carangobom.controller.dto;
 import br.com.caelum.carangobom.modelo.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 
 @Getter
 @AllArgsConstructor
@@ -21,8 +19,8 @@ public class UsuarioDto {
         this.email = usuario.getEmail();
     }
 
-    public static List<UsuarioDto> toList(List<Usuario> usuarios) {
-        return usuarios.stream().map(UsuarioDto::new).collect(Collectors.toList());
+    public static Page<UsuarioDto> toList(Page<Usuario> usuarios) {
+        return usuarios.map(UsuarioDto::new);
     }
 
 }

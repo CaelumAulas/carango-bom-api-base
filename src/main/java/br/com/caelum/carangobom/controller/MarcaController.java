@@ -8,6 +8,11 @@ import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
 import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +38,10 @@ public class MarcaController {
     }
 
     @GetMapping
-    public List<MarcaDto> listar() {
-        List<Marca> marcas = marcaRepository.findAllByOrderByNome();
+    @Cacheable(value = "listaDeMarcas")
+    public Page<MarcaDto> listar(@PageableDefault()  Pageable paginacao) {
+
+        Page<Marca> marcas = marcaRepository.findAll(paginacao);
         return MarcaDto.toList(marcas);
     }
 
@@ -49,6 +56,7 @@ public class MarcaController {
     }
 
     @PostMapping
+    @CacheEvict(value = "listaDeMarcas", allEntries = true)
     public ResponseEntity<MarcaDto> cadastrar(@Valid @RequestBody MarcaForm marcaForm, UriComponentsBuilder uriBuilder){
         Marca marca = marcaForm.converter();
         marca = marcaRepository.save(marca);
@@ -58,6 +66,7 @@ public class MarcaController {
 
     @PutMapping("{id}")
     @Transactional
+    @CacheEvict(value = "listaDeMarcas", allEntries = true)
     public ResponseEntity<MarcaDto> alterar(@PathVariable Long id, @Valid @RequestBody MarcaForm marcaForm) {
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
         if (marcaOptional.isPresent()) {
@@ -70,6 +79,7 @@ public class MarcaController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @CacheEvict(value = "listaDeMarcas", allEntries = true)
     public ResponseEntity<MarcaDto> deletar(@PathVariable Long id) {
         Optional<Marca> marcaOptional = marcaRepository.findById(id);
         if (marcaOptional.isPresent()) {

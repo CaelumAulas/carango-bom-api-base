@@ -4,6 +4,7 @@ import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.modelo.Veiculo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ public class VeiculoDto {
         this(veiculo.getId(), veiculo.getModelo(), veiculo.getAno(), veiculo.getValor(), veiculo.getMarca());
     }
 
-    public static List<VeiculoDto> toList(List<Veiculo> veiculos) {
-        return veiculos.stream().map(VeiculoDto::new).collect(Collectors.toList());
+    public static Page<VeiculoDto> toList(Page<Veiculo> veiculos) {
+        return veiculos.map(VeiculoDto::new);
     }
 }

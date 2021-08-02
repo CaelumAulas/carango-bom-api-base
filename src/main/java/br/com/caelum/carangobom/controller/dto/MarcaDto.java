@@ -7,6 +7,7 @@ import br.com.caelum.carangobom.modelo.Marca;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 @Getter
 @Setter
@@ -21,8 +22,8 @@ public class MarcaDto {
 		this.nome = marca.getNome();
 	}
 
-	public static List<MarcaDto> toList(List<Marca> marcas) {
-		return marcas.stream().map(MarcaDto::new).collect(Collectors.toList());
+	public static Page<MarcaDto> toList(Page<Marca> marcas) {
+		return marcas.map(MarcaDto::new);
 	}
 
 }

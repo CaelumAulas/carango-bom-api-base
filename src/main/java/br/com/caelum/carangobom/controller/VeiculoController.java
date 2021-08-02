@@ -5,6 +5,11 @@ import br.com.caelum.carangobom.controller.form.VeiculoForm;
 import br.com.caelum.carangobom.modelo.Veiculo;
 import br.com.caelum.carangobom.repository.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -27,8 +31,9 @@ public class VeiculoController {
     }
 
     @GetMapping
-    public List<VeiculoDto> listar() {
-        List<Veiculo> veiculos = veiculoRepository.findAllByOrderByModelo();
+    @Cacheable(value = "listaDeVeiculos")
+    public Page<VeiculoDto> listar(@PageableDefault() Pageable paginacao) {
+        Page<Veiculo> veiculos = veiculoRepository.findAll(paginacao);
         return VeiculoDto.toList(veiculos);
     }
 
@@ -43,6 +48,7 @@ public class VeiculoController {
     }
 
     @PostMapping
+    @CacheEvict(value = "listaDeVeiculos", allEntries = true)
     public ResponseEntity<VeiculoDto> cadastrar(@Valid @RequestBody VeiculoForm veiculoForm, UriComponentsBuilder uriBuilder){
         Veiculo veiculo = veiculoForm.converter();
         veiculo = veiculoRepository.save(veiculo);
@@ -52,6 +58,7 @@ public class VeiculoController {
 
     @PutMapping("{id}")
     @Transactional
+    @CacheEvict(value = "listaDeVeiculos", allEntries = true)
     public ResponseEntity<VeiculoDto> atualizar(@PathVariable Long id, @Valid @RequestBody VeiculoForm veiculoForm) {
         Optional<Veiculo> veiculoOptional = veiculoRepository.findById(id);
         if(veiculoOptional.isPresent()){
@@ -64,6 +71,7 @@ public class VeiculoController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @CacheEvict(value = "listaDeVeiculos", allEntries = true)
     public ResponseEntity<VeiculoDto> deletar(@PathVariable Long id) {
         Optional<Veiculo> veiculoOptional = veiculoRepository.findById(id);
         if(veiculoOptional.isPresent()){

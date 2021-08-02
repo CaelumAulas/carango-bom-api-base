@@ -5,6 +5,10 @@ import br.com.caelum.carangobom.controller.form.MarcaForm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -46,14 +50,18 @@ class MarcaControllerTest {
             new Marca(2L, "BMW"),
             new Marca(3L, "Fiat")
         );
+        Page<Marca> marcasPaged = new PageImpl(marcas);
 
-        when(marcaRepository.findAllByOrderByNome())
-            .thenReturn(marcas);
+        Pageable paginacao = PageRequest.of(0, 3);
 
-        List<MarcaDto> resultado = marcaController.listar();
+        when(marcaRepository.findAll(paginacao))
+            .thenReturn(marcasPaged);
 
-        assertNotNull(resultado);
-        assertEquals(3, resultado.size());
+
+
+        Page<MarcaDto> resultado = marcaController.listar(paginacao);
+
+        assertEquals(3, resultado.getTotalElements());
     }
 
     @Test
@@ -127,7 +135,7 @@ class MarcaControllerTest {
 
     @Test
     void deveDeletarMarcaExistente() {
-        Marca audi = new Marca(1l, "Audi");
+        Marca audi = new Marca(1L, "Audi");
 
         when(marcaRepository.findById(1L))
             .thenReturn(Optional.of(audi));
