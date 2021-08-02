@@ -40,11 +40,8 @@ public class UsuarioAutenticacaoService {
         try {
             String tokenTratado = token.replace("Bearer ", "");
             Claims claims = tokenService.decodeToken(tokenTratado);
-            System.out.println(claims.getIssuer());
-            System.out.println(claims.getIssuedAt());
 
             if (claims.getExpiration().before(new Date(System.currentTimeMillis()))) throw new ExpiredTokenException();
-            System.out.println(claims.getExpiration());
             return true;
         } catch (ExpiredTokenException et){
             et.printStackTrace();
