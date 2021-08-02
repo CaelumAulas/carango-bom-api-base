@@ -44,10 +44,8 @@ public class UsuarioAutenticacaoService {
             if (claims.getExpiration().before(new Date(System.currentTimeMillis()))) throw new ExpiredTokenException();
             return true;
         } catch (ExpiredTokenException et){
-            et.printStackTrace();
             throw et;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new InvalidTokenException();
         }
     }
