@@ -14,10 +14,10 @@ import java.util.Date;
 @Getter
 public class VeiculoDto {
 
-    public Long id;
-    public String modelo;
-    public Date ano;
-    public BigDecimal valor;
+    private Long id;
+    private String modelo;
+    private Date ano;
+    private BigDecimal valor;
 
     @ManyToOne
     public Marca marca;

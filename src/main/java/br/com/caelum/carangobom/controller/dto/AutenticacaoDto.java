@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class AutenticacaoDto {
 
-	public Long id;
-	public String nome;
-	public String email;
-	public String token;
+	private Long id;
+	private String nome;
+	private String email;
+	private String token;
 
 	public AutenticacaoDto(long id, String nome, String email, String token) {
 		this.id = id;

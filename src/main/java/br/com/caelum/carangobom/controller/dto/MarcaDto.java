@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 public class MarcaDto {
 	
-	public Long id;
-	public String nome;
+	private Long id;
+	private String nome;
 
 	public MarcaDto(Marca marca) {
 		this.id = marca.getId();

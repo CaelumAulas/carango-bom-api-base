@@ -9,9 +9,9 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 public class UsuarioDto {
 
-    public Long id;
-    public String nome;
-    public String email;
+    private Long id;
+    private String nome;
+    private String email;
 
     public UsuarioDto(Usuario usuario) {
         this.id = usuario.getId();
