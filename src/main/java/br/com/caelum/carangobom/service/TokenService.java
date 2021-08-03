@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -12,16 +13,18 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    @Value("${jwt.secret}")
+    @Value("${br.com.caelum.carangobom.jwt.secret}")
     private String key;
 
-    private static final long expirationTime = 1800000;
+    @Value("${br.com.caelum.carangobom.jwt.expiration}")
+    private String validadeToken;
 
-    public String generateToken(Usuario usuario) {
+    public String generateToken(Authentication authentication) {
+    	Usuario usuarioLogado = (Usuario) authentication.getPrincipal();
         return Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setSubject(usuario.getId().toString())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
+                .setSubject(usuarioLogado.getId().toString())
+                .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(validadeToken)))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
