@@ -19,7 +19,7 @@ public class TokenService {
     @Value("${br.com.caelum.carangobom.jwt.expiration}")
     private String validadeToken;
 
-    public String generateToken(Authentication authentication) {
+    public String gerarToken(Authentication authentication) {
     	Usuario usuarioLogado = (Usuario) authentication.getPrincipal();
         return Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
