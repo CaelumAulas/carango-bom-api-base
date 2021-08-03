@@ -38,9 +38,10 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
             .antMatchers(HttpMethod.GET, "/veiculos").permitAll()
+                .antMatchers(HttpMethod.GET, "/dashboard").permitAll()
             .and().csrf().disable();
     }
-    
+
     @Override
     public void configure(WebSecurity web) throws Exception {
 	    // Do nothing

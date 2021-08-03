@@ -11,4 +11,6 @@ import br.com.caelum.carangobom.modelo.Veiculo;
 public interface VeiculoRepository extends JpaRepository<Veiculo, Long>   {
     List<Veiculo> findAllByOrderByModelo();
     Veiculo findByModelo(String modelo);
+
+    Long countById(Long id);
 }

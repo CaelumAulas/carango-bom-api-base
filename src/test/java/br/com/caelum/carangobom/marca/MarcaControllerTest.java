@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -38,7 +37,6 @@ class MarcaControllerTest {
     @BeforeEach
     public void configuraMock() {
         openMocks(this);
-
         marcaController = new MarcaController(marcaRepository);
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
@@ -56,8 +54,6 @@ class MarcaControllerTest {
 
         when(marcaRepository.findAll(paginacao))
             .thenReturn(marcasPaged);
-
-
 
         Page<MarcaDto> resultado = marcaController.listar(paginacao);
 

@@ -14,5 +14,6 @@ public interface MarcaRepository extends JpaRepository<Marca, Long>  {
     List<Marca> findAllByOrderByNome();
     
     Marca findByNome(String nome);
+    Long countById(Long id);
 
 }
