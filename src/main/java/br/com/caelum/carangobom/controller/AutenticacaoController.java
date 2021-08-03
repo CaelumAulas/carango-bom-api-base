@@ -8,12 +8,14 @@ import br.com.caelum.carangobom.service.TokenService;
 import br.com.caelum.carangobom.service.UsuarioAutenticacaoService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -39,9 +41,8 @@ public class AutenticacaoController {
     	UsernamePasswordAuthenticationToken dadosLogin = autenticacaoForm.converter();
 		Optional<Usuario> usuario = usuarioRepository.findByEmail(autenticacaoForm.getEmail());
 		if(usuario.isEmpty()) {
-			return ResponseEntity.badRequest().build();
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuario não encontrado!");
 		}
-
     	try {
 			Authentication authentication = authenticationManager.authenticate(dadosLogin);
 			String token = "Bearer " + tokenService.gerarToken(authentication);
