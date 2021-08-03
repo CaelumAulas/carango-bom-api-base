@@ -86,8 +86,8 @@ class MarcaControllerTest {
         MarcaForm marcaForm = new MarcaForm();
         marcaForm.setNome("Ferrari");
 
-        when(marcaRepository.save(any(Marca.class))).then(i -> {
-            Marca marcaSalva = i.getArgument(0, Marca.class);
+        when(marcaRepository.save(any(Marca.class))).then(marca -> {
+            Marca marcaSalva = marca.getArgument(0, Marca.class);
             marcaSalva.setId(1L);
             return marcaSalva;
         });
