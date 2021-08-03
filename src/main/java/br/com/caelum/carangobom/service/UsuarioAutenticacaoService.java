@@ -7,7 +7,6 @@ import br.com.caelum.carangobom.exception.InvalidTokenException;
 import br.com.caelum.carangobom.modelo.Usuario;
 import br.com.caelum.carangobom.repository.UsuarioRepository;
 import io.jsonwebtoken.Claims;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

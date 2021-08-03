@@ -40,9 +40,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/veiculos").permitAll()
             .and().csrf().disable();
     }
-
+    
     @Override
     public void configure(WebSecurity web) throws Exception {
-
+	    // Do nothing
     }
 }
