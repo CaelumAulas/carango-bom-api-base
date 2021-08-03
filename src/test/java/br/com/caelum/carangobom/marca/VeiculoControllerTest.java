@@ -20,6 +20,7 @@ import br.com.caelum.carangobom.controller.VeiculoController;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -104,7 +105,7 @@ public class VeiculoControllerTest {
 
         ResponseEntity<VeiculoDto> resposta = veiculoController.cadastrar(veiculoForm, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
-        assertEquals("http://localhost:8080/veiculos/1", resposta.getHeaders().getLocation().toString());
+        assertEquals("http://localhost:8080/veiculos/1", Objects.requireNonNull(resposta.getHeaders().getLocation()).toString());
     }
 
 

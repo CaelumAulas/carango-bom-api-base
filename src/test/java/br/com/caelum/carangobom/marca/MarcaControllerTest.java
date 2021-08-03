@@ -18,6 +18,7 @@ import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.repository.MarcaRepository;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -94,7 +95,7 @@ class MarcaControllerTest {
 
         ResponseEntity<MarcaDto> resposta = marcaController.cadastrar(marcaForm, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
-        assertEquals("http://localhost:8080/marcas/1", resposta.getHeaders().getLocation().toString());
+        assertEquals("http://localhost:8080/marcas/1", Objects.requireNonNull(resposta.getHeaders().getLocation()).toString());
     }
 
     @Test
