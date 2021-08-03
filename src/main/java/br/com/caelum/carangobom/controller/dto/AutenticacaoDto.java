@@ -1,5 +1,4 @@
 package br.com.caelum.carangobom.controller.dto;
-
 import br.com.caelum.carangobom.modelo.Usuario;
 import lombok.Getter;
 
