@@ -22,8 +22,10 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/login")
 public class AutenticacaoController {
-	
+
+	@Autowired
 	private UsuarioRepository usuarioRepository;
+
 	private TokenService tokenService;
 	
 	@Autowired
@@ -35,9 +37,12 @@ public class AutenticacaoController {
     @PostMapping
     public ResponseEntity<AutenticacaoDto> login(@RequestBody @Valid AutenticacaoForm autenticacaoForm) {
     	UsernamePasswordAuthenticationToken dadosLogin = autenticacaoForm.converter();
-    	
+		Optional<Usuario> usuario = usuarioRepository.findByEmail(autenticacaoForm.getEmail());
+		if(usuario.isEmpty()) {
+			return ResponseEntity.badRequest().build();
+		}
+
     	try {
-    		Optional<Usuario> usuario = usuarioRepository.findByEmail(autenticacaoForm.getEmail());
 			Authentication authentication = authenticationManager.authenticate(dadosLogin);
 			String token = "Bearer " + tokenService.gerarToken(authentication);
 			return ResponseEntity.ok(new AutenticacaoDto(usuario.get(), token));

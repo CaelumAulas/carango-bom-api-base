@@ -10,21 +10,9 @@ import lombok.Setter;
 public class AutenticacaoForm {
     private String email;
     private String senha;
-    
-    
+
     public UsernamePasswordAuthenticationToken converter() {
     	return new UsernamePasswordAuthenticationToken(senha, email);
     }
-
-
-	public String getEmail() {
-		return email;
-	}
-
-
-	public String getSenha() {
-		return senha;
-	}
-
     
 }
