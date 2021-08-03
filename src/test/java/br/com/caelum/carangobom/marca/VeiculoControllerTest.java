@@ -61,7 +61,7 @@ public class VeiculoControllerTest {
 
         Page<VeiculoDto> resultado = veiculoController.listar(paginacao);
 
-        assertEquals(3, resultado.getTotalElements());
+        assertEquals(4, resultado.getTotalElements());
     }
 
 
