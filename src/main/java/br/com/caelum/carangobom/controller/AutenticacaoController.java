@@ -48,7 +48,7 @@ public class AutenticacaoController {
 			String token = "Bearer " + tokenService.gerarToken(authentication);
 			return ResponseEntity.ok(new AutenticacaoDto(usuario.get(), token));
     	}catch (AuthenticationException e) {
-			return ResponseEntity.badRequest().build();
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Não foi possível autenticar!");
 		}
     }
 }
