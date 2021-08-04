@@ -9,12 +9,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-public class DashboardControllerTest {
+class DashboardControllerTest {
     private DashboardController dashboardController;
     private UriComponentsBuilder uriBuilder;
 
@@ -40,8 +43,8 @@ public class DashboardControllerTest {
                 .thenReturn(10L);
 
         ResponseEntity<DashboardDto> resultado = dashboardController.listar();
-        assertEquals(resultado.getBody().getNumeroVeiculos(), 10L);
-        assertEquals(resultado.getBody().getNumeroMarcas(), 5L);
+        assertEquals(10L, Objects.requireNonNull(resultado.getBody()).getNumeroVeiculos());
+        assertEquals(5L, resultado.getBody().getNumeroMarcas());
     }
 }
 

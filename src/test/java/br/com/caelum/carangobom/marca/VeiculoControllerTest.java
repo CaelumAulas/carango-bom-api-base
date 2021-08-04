@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-public class VeiculoControllerTest {
+class VeiculoControllerTest {
 
     private VeiculoController veiculoController;
     private UriComponentsBuilder uriBuilder;
@@ -140,7 +140,6 @@ public class VeiculoControllerTest {
         ResponseEntity<VeiculoDto> resposta = veiculoController.atualizar(1L, audiAlteradoForm);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
-
 
     @Test
     void deveDeletarVeiculoExistente() {
