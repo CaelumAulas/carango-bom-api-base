@@ -64,7 +64,6 @@ class VeiculoControllerTest {
         assertEquals(4, resultado.getTotalElements());
     }
 
-
     @Test
     void deveRetornarVeiculoPeloId() {
         Marca marca = new Marca(1L, "Audi");
@@ -107,7 +106,6 @@ class VeiculoControllerTest {
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
         assertEquals("http://localhost:8080/veiculos/1", Objects.requireNonNull(resposta.getHeaders().getLocation()).toString());
     }
-
 
     @Test
     void deveAlterarNomeQuandoVeiculoExistir() {
