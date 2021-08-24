@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.com.caelum.carangobom.controller.MarcaController;
+import br.com.caelum.carangobom.controller.dto.MarcaDTO;
+import br.com.caelum.carangobom.controller.form.MarcaForm;
+import br.com.caelum.carangobom.controller.form.MarcaFormUpdate;
 import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.repository.MarcaRepository;
 
@@ -32,7 +35,6 @@ class MarcaControllerTest {
     public void configuraMock() {
         openMocks(this);
 
-        marcaController = new MarcaController(marcaRepository);
         uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
     }
 
@@ -43,23 +45,26 @@ class MarcaControllerTest {
             new Marca(2L, "BMW"),
             new Marca(3L, "Fiat")
         );
+        List<MarcaDTO> lMarcasDto = MarcaDTO.converter(marcas);
 
         when(marcaRepository.findAllByOrderByNome())
             .thenReturn(marcas);
 
-        List<Marca> resultado = marcaController.lista();
-        assertEquals(marcas, resultado);
+        List<MarcaDTO> resultado = marcaController.listar();
+        assertEquals(lMarcasDto, resultado);
     }
 
     @Test
     void deveRetornarMarcaPeloId() {
         Marca audi = new Marca(1L, "Audi");
 
+        MarcaDTO lAudiDto = new MarcaDTO(audi);
+
         when(marcaRepository.findById(1L))
             .thenReturn(Optional.of(audi));
 
-        ResponseEntity<Marca> resposta = marcaController.id(1L);
-        assertEquals(audi, resposta.getBody());
+        ResponseEntity<MarcaDTO> resposta = marcaController.id(1L);
+        assertEquals(lAudiDto, resposta.getBody());
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
     }
 
@@ -68,7 +73,7 @@ class MarcaControllerTest {
         when(marcaRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<Marca> resposta = marcaController.id(1L);
+        ResponseEntity<MarcaDTO> resposta = marcaController.id(1L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 
@@ -84,7 +89,9 @@ class MarcaControllerTest {
                 return marcaSalva;
             });
 
-        ResponseEntity<Marca> resposta = marcaController.cadastra(nova, uriBuilder);
+        MarcaForm lMarcaForm = new MarcaForm(nova);
+
+        ResponseEntity<MarcaDTO> resposta = marcaController.cadastrar(lMarcaForm, uriBuilder);
         assertEquals(HttpStatus.CREATED, resposta.getStatusCode());
         assertEquals("http://localhost:8080/marcas/1", resposta.getHeaders().getLocation().toString());
     }
@@ -96,10 +103,12 @@ class MarcaControllerTest {
         when(marcaRepository.findById(1L))
             .thenReturn(Optional.of(audi));
 
-        ResponseEntity<Marca> resposta = marcaController.altera(1L, new Marca(1L, "NOVA Audi"));
+        MarcaFormUpdate lMarcaFormUpdate = new MarcaFormUpdate(audi);
+
+        ResponseEntity<MarcaDTO> resposta = marcaController.alterar(1L, lMarcaFormUpdate);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
-        Marca marcaAlterada = resposta.getBody();
+        MarcaDTO marcaAlterada = resposta.getBody();
         assertEquals("NOVA Audi", marcaAlterada.getNome());
     }
 
@@ -108,7 +117,9 @@ class MarcaControllerTest {
         when(marcaRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<Marca> resposta = marcaController.altera(1L, new Marca(1L, "NOVA Audi"));
+        MarcaFormUpdate lMarcaFormUpdate = new MarcaFormUpdate(new Marca(1L, "NOVA Audi"));
+
+        ResponseEntity<MarcaDTO> resposta = marcaController.alterar(1L, lMarcaFormUpdate);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
     }
 
@@ -119,7 +130,7 @@ class MarcaControllerTest {
         when(marcaRepository.findById(1L))
             .thenReturn(Optional.of(audi));
 
-        ResponseEntity<Marca> resposta = marcaController.deleta(1L);
+        ResponseEntity<?> resposta = marcaController.deletar(1L);
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
         verify(marcaRepository).delete(audi);
     }
@@ -129,7 +140,7 @@ class MarcaControllerTest {
         when(marcaRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        ResponseEntity<Marca> resposta = marcaController.deleta(1L);
+        ResponseEntity<?> resposta = marcaController.deletar(1L);
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
 
         verify(marcaRepository, never()).delete(any());

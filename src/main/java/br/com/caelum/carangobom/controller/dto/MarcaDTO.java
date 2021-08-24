@@ -8,11 +8,11 @@ import br.com.caelum.carangobom.modelo.Marca;
 public class MarcaDTO {
 
     private Long id;
-    private String Nome;
+    private String nome;
 
     public MarcaDTO(Marca pMarca) {
         this.id = pMarca.getId();
-        this.Nome = pMarca.getNome();
+        this.nome = pMarca.getNome();
     }
 
     public Long getId() {
@@ -20,7 +20,7 @@ public class MarcaDTO {
     }
 
     public String getNome() {
-        return Nome;
+        return nome;
     }
 
     public static List<MarcaDTO> converter(List<Marca> pMarca){

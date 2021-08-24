@@ -1,96 +1,83 @@
 package br.com.caelum.carangobom.controller;
 
+import br.com.caelum.carangobom.controller.dto.MarcaDTO;
+import br.com.caelum.carangobom.controller.form.MarcaForm;
+import br.com.caelum.carangobom.controller.form.MarcaFormUpdate;
 import br.com.caelum.carangobom.modelo.Marca;
 import br.com.caelum.carangobom.repository.MarcaRepository;
-import br.com.caelum.carangobom.validacao.ErroDeParametroOutputDto;
-import br.com.caelum.carangobom.validacao.ListaDeErrosOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/marcas")
 public class MarcaController {
-
-    private MarcaRepository mr;
-
+    
     @Autowired
-    public MarcaController(MarcaRepository mr) {
-        this.mr = mr;
+    private MarcaRepository gMarcaRepository;
+
+    @GetMapping
+    public List<MarcaDTO> listar() {
+        List<Marca> lMarcas = gMarcaRepository.findAllByOrderByNome();
+        return MarcaDTO.converter(lMarcas);
     }
 
-    @GetMapping("/marcas")
-    @Transactional
-    public List<Marca> lista() {
-        return mr.findAllByOrderByNome();
-    }
+    @GetMapping("/{id}")
+    public ResponseEntity<MarcaDTO> id(@PathVariable Long id) {
+        Optional<Marca> lOpcional = gMarcaRepository.findById(id);
 
-    @GetMapping("/marcas/{id}")
-    @Transactional
-    public ResponseEntity<Marca> id(@PathVariable Long id) {
-        Optional<Marca> m1 = mr.findById(id);
-        if (m1.isPresent()) {
-            return ResponseEntity.ok(m1.get());
+        if (lOpcional.isPresent()) {
+            Marca lMarca = lOpcional.get();
+
+            return ResponseEntity.ok(new MarcaDTO(lMarca));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("/marcas")
+    @PostMapping
     @Transactional
-    public ResponseEntity<Marca> cadastra(@Valid @RequestBody Marca m1, UriComponentsBuilder uriBuilder) {
-        Marca m2 = mr.save(m1);
-        URI h = uriBuilder.path("/marcas/{id}").buildAndExpand(m1.getId()).toUri();
-        return ResponseEntity.created(h).body(m2);
+    public ResponseEntity<MarcaDTO> cadastrar(@RequestBody @Valid MarcaForm pForm, UriComponentsBuilder uriBuilder) {
+        Marca lMarca = pForm.converter();
+        gMarcaRepository.save(lMarca);
+
+        URI lUri = uriBuilder.path("/marcas/{id}").buildAndExpand(lMarca.getId()).toUri();
+        return ResponseEntity.created(lUri).body(new MarcaDTO(lMarca));
     }
 
-    @PutMapping("/marcas/{id}")
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<Marca> altera(@PathVariable Long id, @Valid @RequestBody Marca m1) {
-        Optional<Marca> m2 = mr.findById(id);
-        if (m2.isPresent()) {
-            Marca m3 = m2.get();
-            m3.setNome(m1.getNome());
-            return ResponseEntity.ok(m3);
+    public ResponseEntity<MarcaDTO> alterar(@PathVariable Long id, @Valid @RequestBody MarcaFormUpdate form) {
+        Optional<Marca> lOpcional = gMarcaRepository.findById(id);
+
+        if (lOpcional.isPresent()) {
+            Marca lMarca = lOpcional.get();
+            lMarca = form.Update(lMarca);
+
+            return ResponseEntity.ok(new MarcaDTO(lMarca));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/marcas/{id}")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Marca> deleta(@PathVariable Long id) {
-        Optional<Marca> m1 = mr.findById(id);
-        if (m1.isPresent()) {
-            Marca m2 = m1.get();
-            mr.delete(m2);
-            return ResponseEntity.ok(m2);
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        Optional<Marca> lOpcional = gMarcaRepository.findById(id);
+
+        if (lOpcional.isPresent()) {
+            gMarcaRepository.deleteById(id);
+            
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ListaDeErrosOutputDto validacao(MethodArgumentNotValidException excecao) {
-        List<ErroDeParametroOutputDto> l = new ArrayList<>();
-        excecao.getBindingResult().getFieldErrors().forEach(e -> {
-            ErroDeParametroOutputDto d = new ErroDeParametroOutputDto();
-            d.setParametro(e.getField());
-            d.setMensagem(e.getDefaultMessage());
-            l.add(d);
-        });
-        ListaDeErrosOutputDto l2 = new ListaDeErrosOutputDto();
-        l2.setErros(l);
-        return l2;
     }
 }
