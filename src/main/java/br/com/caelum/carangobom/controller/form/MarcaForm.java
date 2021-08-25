@@ -12,15 +12,18 @@ public class MarcaForm {
     @NotNull @NotEmpty @NotBlank @Length(min = 2)
     private String nome;
 
+    public MarcaForm() {
+    }
+
     public MarcaForm(Marca pMarca) {
         this.nome = pMarca.getNome();
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
     public Marca converter() {
-        return new Marca(nome);
+        return new Marca(this.nome);
     }
 }

@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    restart: always 
+    environment:
+      POSTGRES_DB: 'carangobom'
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    volumes:
+       - postgres:/var/lib/postgres
+    ports:
+      - "5432:5432"
+    #networks:
+    #  - postgres
+    #restart: unless-stopped
+# Names our volume
+volumes:
+  postgres:

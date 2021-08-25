@@ -12,6 +12,9 @@ public class MarcaFormUpdate {
     @NotNull @NotEmpty @NotBlank @Length(min = 2)
     private String nome;
 
+    public MarcaFormUpdate() {
+    }
+
     public MarcaFormUpdate(Marca pMarca) {
         this.nome = pMarca.getNome();
     }
